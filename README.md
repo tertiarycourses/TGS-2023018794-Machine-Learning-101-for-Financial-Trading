@@ -1,6 +1,6 @@
 # Machine Learning 101 for Financial Trading
 
-A hands-on IBF-accredited course on quant and algorithmic stock trading: learners turn trading ideas into testable hypotheses, model them with machine learning, backtest them with realistic costs and run them as an automated paper-trading pipeline on Alpaca and TradingView.
+A hands-on IBF-accredited course on quant and algorithmic stock trading: learners turn trading ideas into testable hypotheses, model them with machine learning, backtest them with realistic costs and run them as an automated paper-trading pipeline on Alpaca and TradingView - with AI writing the code, so the focus stays on the algorithms.
 
 | Course detail | Information |
 |---|---|
@@ -9,11 +9,11 @@ A hands-on IBF-accredited course on quant and algorithmic stock trading: learner
 | Skills Framework | FSE-DAT-3019-1.1 Data Analytics and Computational Modelling, Proficiency Level 3 |
 | Duration | 2 days, 16 hours (14 hours training + 2 hours assessment) |
 | Registration | [View course details and register](https://www.tertiarycourses.com.sg/ibf-machine-learning-101-for-financial-trading.html) |
-| Funding | Up to 70% IBF-STS funding for eligible participants (funding validity 8 Feb 2023 to 7 Feb 2028). Eligibility and terms apply. |
+| Funding | Up to 70% IBF-STS funding for eligible participants (funding valid 8 Feb 2023 to 7 Feb 2028). Eligibility and terms apply. |
 
 ## About the course
 
-Algorithms place most orders in today's equity markets, and machine learning and agentic AI are changing how trading ideas are found, tested and executed. This course starts from the success stories and evolution of quant - from Thorp and Renaissance through statistical arbitrage to high-frequency trading - and the paradigm shift from machine learning to LLMs. Learners then classify and code the main trading algorithms, build indicators and strategies on TradingView and in Python, train and A/B test machine learning signals, build a hedged pairs-trading strategy, and finally assemble an end-to-end, automated algorithmic trading pipeline that backtests with costs, forward-tests with automatic paper orders on Alpaca, diagnoses biases and reports performance. No real money is used.
+Algorithms place most orders in today's equity markets, and machine learning and agentic AI are changing how trading ideas are found, tested and executed. The course opens with quant success stories and the evolution of quant - from Thorp and Renaissance through statistical arbitrage to high-frequency trading - and the paradigm shift in which AI now writes the code while the quant owns the hypothesis, the algorithm, the testing and the risk. Learners classify and use the main trading algorithms, build indicators and strategies on TradingView, train and A/B test machine-learning signals, build a hedged pairs-trading strategy, and run an end-to-end, automated pipeline that backtests with costs, forward-tests with automatic paper orders on Alpaca, diagnoses biases and reports performance. No real money is used.
 
 ## Learning outcomes
 
@@ -24,16 +24,16 @@ Algorithms place most orders in today's equity markets, and machine learning and
 
 ## Topics covered
 
-1. **Foundations of Quant and Algorithmic Trading: From Thorp to AI Agents** (Day 1, Labs 1-4) - Quant Success Stories: What Systematic Trading Has Achieved; The Evolution of Quant: From Thorp and Renaissance to High-Frequency Trading; The Paradigm Shift from Machine Learning to LLMs, and Its Impact on Quant; AI Agents versus Agentic AI in Trading, and Multi-Agent Trading Systems; Forms of Data within Financial Services and Big Data Applications in Trading; Developing Hypotheses for Quant and Algorithmic Trading Models.
+1. **Foundations of Quant and Algorithmic Trading: From Thorp to AI Agents** (Day 1, Labs 1-4) - Quant Success Stories: What Systematic Trading Has Achieved; The Evolution of Quant: From Thorp and Renaissance to High-Frequency Trading; The Paradigm Shift from Machine Learning to LLMs, and Its Impact on Quant; Agentic AI versus AI Agents in Trading, and Multi-Agent Trading Systems; Forms of Data within Financial Services and Big Data Applications in Trading; Developing Hypotheses for Quant and Algorithmic Trading Models.
 2. **Technical Indicators, Trading Strategies and Metrics with TradingView and Alpaca** (Day 1, Labs 5-9) - Technical Indicators: Trend, Momentum, Volatility and Volume; Classification of Algorithmic Trading and Quant Algorithms; Analytics Platforms and Tools: TradingView versus Alpaca, and Python; Coding Languages for Algorithms and Signals, and Order Placement; Performance and Risk Metric Definitions.
 3. **Machine Learning Models, Statistical Modelling and A/B Testing for Trading Signals** (Day 2, Labs 10-14) - Types of Statistical Analyses, Data Models, Algorithms and Computational Methods; Supervised Learning Models for Trading Signals; Unsupervised Learning: Clustering and PCA for Market Regimes; Statistical Modelling Techniques for Financial Time Series; A/B Testing Trading Strategies; Pairs Trading: Statistical Arbitrage as a Hedging Algorithm.
 4. **Building an End-to-End Algorithmic Trading Pipeline: Backtest, Forward Test and Performance Analysis** (Day 2, Labs 15-20) - Architecture of an End-to-End Algorithmic Trading Pipeline; Backtesting with Realistic Trading Costs; Forward Testing with Automated Paper Trading; Potential Reasons for Unintended Outcomes and How to Diagnose Them; Performance Analysis, Insights and Reporting.
 
 ## Labs
 
-Each lab adds one stage to a single trading pipeline (`labs/pipeline/`). Every lab folder holds its runnable `.py` file(s) (and `.pine` scripts for the TradingView labs) and a `LabNN_Instructions.pdf` with step-by-step instructions, AI-assistant prompts and checks. All labs also run offline on bundled market data.
+Each lab adds one stage to a single algorithmic-trading pipeline. Every lab folder holds a `LabNN_Instructions.pdf` lab manual (step-by-step instructions, AI-assistant prompts and checks) and its runnable `.py` / `.pine` files; all labs also run offline on bundled market data.
 
-| Lab | Pipeline stage | Title | Instructions |
+| Lab | Pipeline stage | Title | Lab manual |
 |---|---|---|---|
 | 01 | Configuration | [Pipeline Skeleton, Configuration and the Alpaca Paper Account](labs/Lab01-alpaca-setup/) | [PDF](labs/Lab01-alpaca-setup/Lab01_Instructions.pdf) |
 | 02 | Data validation | [Data-Validation Stage: Cross-Check Pipeline Bars against TradingView](labs/Lab02-tradingview-charts/) | [PDF](labs/Lab02-tradingview-charts/Lab02_Instructions.pdf) |
@@ -56,6 +56,10 @@ Each lab adds one stage to a single trading pipeline (`labs/pipeline/`). Every l
 | 19 | Monitoring and reporting | [Monitoring and Reporting Stage: Automated Tearsheet and Backtest-vs-Forward Report](labs/Lab19-performance-report/) | [PDF](labs/Lab19-performance-report/Lab19_Instructions.pdf) |
 | 20 | End-to-end pipeline | [Capstone: One Command Runs the Pipeline End to End, with an Agentic Layer and Human Approval](labs/Lab20-agentic-capstone/) | [PDF](labs/Lab20-agentic-capstone/Lab20_Instructions.pdf) |
 
+## Course software
+
+The labs are designed to run in the course's trading simulator, [alfredang/algorithmic-trader-bot](https://github.com/alfredang/algorithmic-trader-bot) - a local web app (uv or Docker Compose) for data, strategies, backtesting, paper trading, analytics and multi-agent AI. Download and installation steps are in the Learner Guide (Platform Guides) and the Lab 1 manual.
+
 ## Public package
 
 | Item | Files |
@@ -64,9 +68,7 @@ Each lab adds one stage to a single trading pipeline (`labs/pipeline/`). Every l
 | Lesson Plan | [DOCX](courseware/LP_ML%20101%20for%20Financial%20Trading_v2.0.docx) · [PDF](courseware/LP_ML%20101%20for%20Financial%20Trading_v2.0.pdf) |
 | Learner Guide | [DOCX](courseware/LG_ML%20101%20for%20Financial%20Trading_v2.0.docx) · [PDF](courseware/LG_ML%20101%20for%20Financial%20Trading_v2.0.pdf) · [Markdown](courseware/LG_ML%20101%20for%20Financial%20Trading_v2.0.md) |
 | Facilitator Guide (public edition, no assessment keys) | [DOCX](courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.0.docx) · [PDF](courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.0.pdf) |
-| Labs | [`labs/`](labs/) - 20 labs, the `pipeline/` package, shared `common/` library, bundled data |
-
-**Getting started:** `cd labs`, create a virtual environment, `pip install -r requirements.txt`, copy `.env.example` to `.env` (optional Alpaca paper keys), then follow `Lab01-alpaca-setup/Lab01_Instructions.pdf`.
+| Labs | [`labs/`](labs/) - 20 labs with lab manuals, the `pipeline/` package, shared `common/` library and bundled data |
 
 ## Distribution boundary
 

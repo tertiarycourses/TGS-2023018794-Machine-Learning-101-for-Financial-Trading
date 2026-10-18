@@ -55,12 +55,14 @@ FSE-DAT-3019-1.1 Data Analytics and Computational Modelling (Proficiency Level 3
 - Automated alpha research: systems such as Alpha-GPT turn a quant's idea in plain language into formulaic alpha factors, and AlphaAgent targets alpha decay by steering away from crowded, homogeneous factors. Coding agents now draft strategy code and backtests that the quant reviews.
 - New risks: an LLM may already 'know' what happened in its training period, so in-sample backtests can carry look-ahead bias and a 'distraction' effect from what the model knows about the company (Glasserman and Lin, 2023). Test only on data after the model's knowledge cutoff and anonymise company names.
 - Faster crowding: Lopez-Lira and Tang report that the returns to LLM news strategies decline as LLM adoption rises - prices become more efficient, so an LLM signal decays like any other alpha.
-- What does not change: the hypothesis, out-of-sample testing, costs, risk limits and human accountability. The quant's role shifts from writing every line of a model to specifying, testing and supervising models and agents.
+- The paradigm shift: AI now writes the code. Coding assistants and agents produce the Python, Pine Script and pipelines, so the quant's value moves from writing every line to the big concepts - the hypothesis, how the algorithm decides, unbiased testing with costs, risk control and judging the results. This course is taught that way: AI codes, you own the algorithm.
+- What does not change: the hypothesis, out-of-sample testing, costs, risk limits and human accountability - the quant specifies, tests and supervises the models and agents, and answers for every trade.
 
-### 1.4 AI Agents versus Agentic AI in Trading, and Multi-Agent Trading Systems
+### 1.4 Agentic AI versus AI Agents in Trading, and Multi-Agent Trading Systems
 
-- An AI agent is a single LLM-powered program with tools that performs a bounded trading task on its own - for example a signal bot that fetches a stock's bars and news and replies Buy / Sell / Hold with its reasoning.
-- Agentic AI is the broader paradigm: several specialised agents coordinate, with planning, shared memory and orchestration, to pursue a goal over many steps - for example an analyst team, a trader and a risk manager that debate and jointly decide a stock trade.
+- Agentic AI is the capability of AI to plan and act: it calls tools (market-data and broker APIs), uses skills and memory, and follows instructions and guardrails to complete multi-step work when it is asked - for example, an LLM that fetches a stock's bars and news, checks its memory of past trades and proposes an order within its instructions.
+- An AI agent is a special class of agentic AI that stands by 24/7 and works all the time: it is always on, woken by schedules, events and messages rather than by a prompt, and keeps long-term memory across days. Examples: OpenClaw (an open-source, self-hosted agent), Hermes Agent (Nous Research, February 2026) and OpenAI Dots (always-on agents in ChatGPT, September 2026). In trading, an AI agent is a round-the-clock monitor that watches prices and news overnight and proposes paper trades within limits.
+- Multi-agent systems are agentic AI with several specialised agents - analysts, researchers, a trader and a risk manager - that coordinate, debate and decide; run continuously, the same desk becomes an always-on AI agent.
 - TradingAgents (Xiao et al., 2024) simulates a stock-trading firm: fundamental, sentiment, news and technical analyst agents, bullish and bearish researchers who debate, a trader agent and a risk-management team.
 - Other stock-trading agent systems: FinMem (2023, an LLM trading agent with layered memory making Buy / Sell / Hold decisions), FinAgent (2024, multimodal - prices, news and chart images), StockAgent (2024, LLM investors in a simulated stock market), QuantAgent (2025, indicator, pattern, trend and risk agents for high-frequency trading), the open-source AI Hedge Fund and Agentic Trading Lab, which paper-trades through the Alpaca API.
 - Agentic systems introduce new failure modes: hallucinated figures, prompt injection from news text, over-trading and unclear accountability. Controls: hard risk limits coded outside the LLM, paper trading first, a full decision log and a human who approves every live order.
@@ -134,6 +136,7 @@ FSE-DAT-3019-1.1 Data Analytics and Computational Modelling (Proficiency Level 3
 | Main data | Structured: prices, volumes, fundamentals | Adds unstructured text: news, filings, earnings calls, research |
 | Features | Hand-engineered by the quant (lags, RSI, factors) | Text read directly; LLM scores sentiment and events |
 | Model building | Fit regressions, trees, boosting on labelled data | Prompt or fine-tune pretrained LLMs; agents propose alphas |
+| Who writes the code | The quant, line by line | AI writes it; the quant directs and reviews |
 | Research workflow | The quant writes every line of code | Coding agents draft code and backtests; the quant reviews |
 | Alpha decay | Signals fade as more funds trade them | LLM signals fade too as LLM adoption rises |
 | New risks | Overfitting; look-ahead in features | LLM training-data look-ahead and 'distraction'; homogeneous factors |
@@ -1906,6 +1909,9 @@ Using labs/_outputs/Lab20_e2e_summary.json and labs/_outputs/Lab20_decision_trac
 
 ## References
 
+- [OpenClaw](https://en.wikipedia.org/wiki/OpenClaw)
+- [Turing Post - What is Hermes Agent (Nous Research)](https://www.turingpost.com/p/hermes)
+- [TechCrunch - OpenAI launches Dots (29 Sep 2026)](https://techcrunch.com/2026/09/29/openai-launches-dots-its-bubbly-agentic-avatar/)
 - [D. E. Shaw & Co.](https://en.wikipedia.org/wiki/D._E._Shaw_%26_Co.)
 - [Two Sigma](https://en.wikipedia.org/wiki/Two_Sigma)
 - [Man AHL - who we are](https://www.man.com/ahl)
