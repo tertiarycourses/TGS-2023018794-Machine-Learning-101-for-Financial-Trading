@@ -1,0 +1,8 @@
+time,client,alert_id,ticker,action,qty,http,result,pipeline_signal,order_id,status,detail
+2026-10-18T21:11:52,127.0.0.1,t1,SPY,buy,5,200,order submitted,1,744cfd8a-582c-436b-a6da-d2fc47955226,filled,
+2026-10-18T21:11:52,127.0.0.1,t2,AMEX:SPY,sell,5,200,order submitted,1,107511db-c7aa-4094-9609-95ccb1cd6b92,filled,
+2026-10-18T21:11:52,127.0.0.1,,SPY,buy,5,401,rejected,,,,bad or missing secret
+2026-10-18T21:11:52,127.0.0.1,,TSLA,buy,5,422,rejected,,,,TSLA not on the allow-list
+2026-10-18T21:11:52,127.0.0.1,,AAPL,buy,5000,422,rejected,,,,qty must be between 0 and 100
+2026-10-18T21:11:52,127.0.0.1,,,,,400,rejected,,,,body is not valid JSON
+2026-10-18T21:11:52,127.0.0.1,t1,SPY,buy,5,200,duplicate ignored,,,,alert already processed (TradingView retries are safe)

@@ -1,0 +1,36 @@
+//@version=6
+// Lab 05 - Lion City Capital (fictitious, for training)
+// Overlay indicator: EMA 20 / EMA 50 trend lines + Bollinger Bands (20, 2)
+// Paste into TradingView > Pine Editor > "Add to chart". Educational use only.
+indicator("LCC Trend & Bollinger Bands", shorttitle = "LCC Trend", overlay = true)
+
+// ---- Inputs (editable from the indicator's Settings dialog)
+src        = input.source(close, "Source")
+emaFastLen = input.int(20, "Fast EMA length", minval = 1)
+emaSlowLen = input.int(50, "Slow EMA length", minval = 1)
+bbLen      = input.int(20, "Bollinger length", minval = 1)
+bbMult     = input.float(2.0, "Bollinger std-dev multiplier", minval = 0.1, step = 0.1)
+
+// ---- Calculations (built-in technical analysis functions)
+emaFast = ta.ema(src, emaFastLen)
+emaSlow = ta.ema(src, emaSlowLen)
+[bbMid, bbUpper, bbLower] = ta.bb(src, bbLen, bbMult)
+
+// ---- Plots
+plot(emaFast, "EMA fast", color = color.new(color.blue, 0), linewidth = 2)
+plot(emaSlow, "EMA slow", color = color.new(color.orange, 0), linewidth = 2)
+pUpper = plot(bbUpper, "BB upper", color = color.new(color.gray, 30))
+plot(bbMid, "BB middle", color = color.new(color.gray, 60))
+pLower = plot(bbLower, "BB lower", color = color.new(color.gray, 30))
+fill(pUpper, pLower, color = color.new(color.gray, 92), title = "BB fill")
+
+// ---- Signals: EMA crossovers and band touches
+bullCross = ta.crossover(emaFast, emaSlow)
+bearCross = ta.crossunder(emaFast, emaSlow)
+plotshape(bullCross, "Bullish EMA cross", shape.triangleup, location.belowbar, color.green, size = size.small)
+plotshape(bearCross, "Bearish EMA cross", shape.triangledown, location.abovebar, color.red, size = size.small)
+barcolor(close > bbUpper ? color.teal : close < bbLower ? color.maroon : na)
+
+// ---- Alerts you can create from the chart (Alert > Condition > LCC Trend)
+alertcondition(bullCross, "EMA bullish cross", "{{ticker}}: EMA fast crossed ABOVE EMA slow at {{close}}")
+alertcondition(bearCross, "EMA bearish cross", "{{ticker}}: EMA fast crossed BELOW EMA slow at {{close}}")

@@ -1,0 +1,113 @@
+card:
+  id: H-001
+  name: SPY buy-the-dip after a losing streak
+  instrument: SPY
+  timeframe: 1Day
+  sample:
+    start: '2018-01-01'
+    end: '2025-12-31'
+  rationale: 'Short-term overreaction: after several consecutive down closes, liquidity
+    providers and index-rebalancing flows tend to push the index back up the next
+    day.
+
+    '
+  h1: Mean next-day return after >= 3 consecutive down closes is HIGHER than on all
+    other days
+  h0: Mean next-day return after >= 3 consecutive down closes EQUALS the mean on all
+    other days
+  signal:
+    type: losing_streak
+    n: 3
+  outcome:
+    type: forward_return
+    horizon_days: 1
+  test:
+    method: welch_t
+    bootstrap: 5000
+    seed: 42
+  decision_rule:
+    alpha: 0.05
+    require_positive_effect: true
+    min_edge_bps: 3
+  robustness:
+    streaks:
+    - 2
+    - 3
+    - 4
+    symbols:
+    - QQQ
+  biases_to_watch:
+  - look-ahead
+  - small sample
+  - regime dependence
+  - data snooping
+  - survivorship
+  big_data_use_case:
+    data: 1-minute bars for all S&P 500 members plus news-sentiment scores
+    source: Alpaca Market Data + Alpaca News API
+    tooling: partitioned Parquet store, pandas / DuckDB, scheduled ingest stage
+    governance: vendor licence, point-in-time constituents, PII-free text, audit log
+      of every pull
+    success_measure: effect persists across members and out of sample after costs
+result:
+  n_days: 2010
+  signal_days: 178
+  share: 0.088557
+  mean_signal: 0.002828
+  mean_other: 0.000384
+  mean_all: 0.000601
+  hit_signal: 0.567416
+  hit_all: 0.554229
+  ci95:
+  - 0.0005307332180168949
+  - 0.005135624322995405
+  welch_t: 2.03011
+  p_value: 0.043688
+  edge_bps: 24.432012
+  supported: true
+  first: '2018-01-02'
+  last: '2025-12-30'
+decision: SUPPORTED - reject H0; promote the idea to the signal and backtest stages
+robustness:
+- symbol: SPY
+  n: 2
+  signal_days: 394
+  edge_bps: 8.9
+  t: 1.05
+  p: 0.296
+  decision: not supported
+- symbol: SPY
+  n: 3
+  signal_days: 178
+  edge_bps: 24.4
+  t: 2.03
+  p: 0.044
+  decision: supported
+- symbol: SPY
+  n: 4
+  signal_days: 76
+  edge_bps: 42.8
+  t: 1.96
+  p: 0.053
+  decision: not supported
+- symbol: QQQ
+  n: 2
+  signal_days: 374
+  edge_bps: 20.4
+  t: 2.16
+  p: 0.031
+  decision: supported
+- symbol: QQQ
+  n: 3
+  signal_days: 150
+  edge_bps: 38.1
+  t: 2.78
+  p: 0.006
+  decision: supported
+- symbol: QQQ
+  n: 4
+  signal_days: 53
+  edge_bps: 23.6
+  t: 1.05
+  p: 0.296
+  decision: not supported

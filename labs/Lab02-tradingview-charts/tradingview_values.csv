@@ -1,0 +1,6 @@
+# Values read from the TradingView Data Window (1D bars, regular session).
+# The two rows below are EXAMPLES of what TradingView shows by default - overwrite them with
+# your own readings. setting = default | adjusted (tick "Adjust data for dividends" for adjusted).
+tradingview_symbol,date,open,high,low,close,volume,setting
+NASDAQ:AAPL,2025-12-31,273.06,273.68,271.75,271.86,27293600,default
+SGX:D05,2025-12-31,56.50,56.60,56.11,56.36,2053200,default

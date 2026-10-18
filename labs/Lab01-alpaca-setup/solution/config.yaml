@@ -1,0 +1,84 @@
+# Lion City Capital (fictitious) - algorithmic trading pipeline configuration
+# One file drives every stage. NEVER put API keys or secrets in this file:
+# the pipeline reads them from environment variables (or labs/.env) whose
+# NAMES are listed under `secrets_from_env`. `python -m pipeline check` refuses
+# to run if a value here looks like a key.
+
+firm: "Lion City Capital (fictitious)"
+mode: auto                    # auto = online if Alpaca paper keys are set, else offline | offline = always offline
+
+broker:
+  name: alpaca
+  paper: true                 # hard requirement - there is no live-trading code path
+  sim_state_file: pipeline_sim.json
+
+secrets_from_env:             # names only - the values live in the environment / .env
+  alpaca_key: APCA_API_KEY_ID
+  alpaca_secret: APCA_API_SECRET_KEY
+  webhook_secret: WEBHOOK_SECRET
+  anthropic_key: ANTHROPIC_API_KEY
+
+universe:
+  trade: [SPY, QQQ, AAPL, MSFT, NVDA, JPM, XLF, GLD, TLT]
+  pairs: [[KO, PEP], [JPM, BAC], [XLF, JPM]]
+  benchmark: SPY
+  watch:                      # validated against TradingView in Lab 2
+    - {symbol: AAPL, tradingview: "NASDAQ:AAPL", currency: USD}
+    - {symbol: D05.SI, tradingview: "SGX:D05", currency: SGD}
+
+data:
+  start: "2018-01-01"
+  end: "2025-12-31"
+  timeframes: [1Day, 1Week, 1Month, 1Hour]
+  hourly_window: ["2025-10-01", "2025-12-31"]
+  cache_dir: _cache           # relative to labs
+  max_abs_daily_move: 0.08    # data-quality flag: moves larger than 8% are checked against news / splits
+
+strategy:                     # the strategy the automation stages (16-20) trade
+  name: ema_cross
+  symbol: SPY
+  params: {fast: 10, slow: 30}
+  execution: next_open        # decide at the close of bar t, fill at the open of bar t+1
+
+costs:
+  preset: alpaca_retail       # zero | alpaca_retail | per_share_broker | high_cost
+  scenarios: [zero, alpaca_retail, per_share_broker, high_cost]
+  tradingview:                # matches strategy() in Lab06 lcc_ma_crossover_strategy.pine
+    commission_per_order: 1.0
+    slippage_bps: 0.4
+
+risk:
+  max_position_pct: 0.95      # max share of equity in one position
+  max_daily_loss_pct: 0.02    # no new buys after a 2% fall since the last close
+  max_order_value: 100000     # USD per order
+  max_order_qty: 100          # shares per webhook order
+  allowed_symbols: [SPY, QQQ, AAPL, MSFT, NVDA, JPM, XLF, GLD, TLT]
+  long_only: true
+  kill_switch_file: KILL_SWITCH   # relative to labs; if this file exists nothing trades
+
+live_paper:                   # Lab 8 / Lab 16 live demonstrations on the Alpaca PAPER account
+  max_position_pct: 0.10      # small size for class demos
+  limit_buffer_bps: 25        # limit price = ask x (1 + 25 bps) for a buy, bid x (1 - 25 bps) for a sell
+  poll_seconds: 30            # how long to watch an order for a fill
+  crypto_demo_symbol: "BTC/USD"   # demo of the fill loop only - the course is stock-focused
+  crypto_demo_notional: 25
+
+webhook:
+  host: 127.0.0.1
+  port: 8080
+  path: /webhook
+  require_signal_agreement: false   # true = reject alerts that disagree with the pipeline's own signal (HTTP 409)
+
+agents:
+  model: claude-sonnet-5-5    # used only if ANTHROPIC_API_KEY is set; otherwise rule-based agents
+  symbols: [NVDA, AAPL, SPY]
+  max_position_pct: 0.20
+  max_order_value: 25000
+  min_confidence: 0.6
+  stop_atr: 2.0
+  target_atr: 3.0
+
+schedule:
+  timezone_exchange: America/New_York
+  timezone_desk: Asia/Singapore
+  run_at_exchange_time: "09:35"   # one decision cycle after the US open, Mon-Fri

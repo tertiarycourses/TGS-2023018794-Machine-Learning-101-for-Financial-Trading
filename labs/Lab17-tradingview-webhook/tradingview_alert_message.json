@@ -1,0 +1,1 @@
+{"secret": "REPLACE-WITH-YOUR-WEBHOOK_SECRET", "id": "{{timenow}}-{{strategy.order.id}}", "ticker": "{{ticker}}", "action": "{{strategy.order.action}}", "qty": "{{strategy.order.contracts}}", "price": "{{close}}", "time": "{{timenow}}", "strategy": "LCC Webhook EMA"}

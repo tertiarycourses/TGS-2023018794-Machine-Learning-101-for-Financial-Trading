@@ -1,0 +1,10 @@
+check,subject,status,evidence
+1 look-ahead (features),ema_cross,PASS,0 of 25 truncation / future-shock checks changed values up to t
+1 look-ahead (features),exhibit,FAIL,25 of 25 checks changed values up to t: rolling(center=True)
+2 look-ahead (execution),ema_cross,PASS,pipeline fills next bar; a same-bar backtest would show Sharpe 1.45 vs 0.82 (+0.63)
+2 look-ahead (execution),exhibit,FAIL,signal_t x return_t: Sharpe 4.28 as submitted -> 0.24 once fixed and filled next bar
+3 cost drag,ema_cross,PASS,gross 9.13% -> net 9.02% (drag 1% of gross); break-even 135.8 bps vs assumed 1.5 bps one way
+3 cost drag,exhibit (fixed),WARN,46 position changes a year; net CAGR 1.46%
+4 overfitting,ema_cross,WARN,IS Sharpe 0.86 vs best of 76 random strategies 1.42; OOS 0.75 (decay -0.11)
+4 overfitting,500 random strategies,INFO,best IS 1.77 -> OOS 0.55; median OOS 0.46; IS/OOS correlation -0.05; 16% have IS Sharpe > 1
+5 survivorship / hindsight,universe,WARN,"9 symbols chosen in 2025 from listed names; a hindsight 'AI basket' (NVDA, MSFT, AAPL) CAGR 38.84% vs SPY 14.15% - use a point-in-time universe"

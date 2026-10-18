@@ -1,0 +1,33 @@
+# ---- PRIVATE: assessment and source references (never published) ----
+/assessment/
+/reference/
+**/pp_assessment/
+**/Answer to *
+**/Answers to *
+# Full Facilitator Guide and Assessment Plan embed answer keys and the rubric (trainer-only:
+# Google Drive + TMS). The public "Facilitator-Guide_*" edition carries no keys.
+**/FG_*
+**/FG-*
+**/Assessment_Plan_*
+**/AP-*
+**/AP_*
+
+# ---- SECURITY: credentials ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+lms_tms_api_key
+
+# ---- NOT PUBLISHED: superseded / generated ----
+/archive/
+_superseded/
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+labs/_state/
+labs/_cache/
+.DS_Store
+~$*

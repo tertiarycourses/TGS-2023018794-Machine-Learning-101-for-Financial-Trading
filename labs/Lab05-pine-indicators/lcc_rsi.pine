@@ -1,0 +1,22 @@
+//@version=6
+// Lab 05 - Lion City Capital (fictitious, for training)
+// RSI (Wilder smoothing) in its own pane with overbought / oversold zones.
+// Paste into a NEW Pine Editor tab > "Add to chart". Educational use only.
+indicator("LCC RSI (Wilder)", shorttitle = "LCC RSI", overlay = false)
+
+rsiLen     = input.int(14, "RSI length", minval = 2)
+overbought = input.int(70, "Overbought level", minval = 50, maxval = 100)
+oversold   = input.int(30, "Oversold level", minval = 0, maxval = 50)
+
+rsiValue = ta.rsi(close, rsiLen)
+
+plot(rsiValue, "RSI", color = color.purple, linewidth = 2)
+hline(overbought, "Overbought", color = color.red, linestyle = hline.style_dashed)
+hline(50, "Mid-line", color = color.gray, linestyle = hline.style_dotted)
+hline(oversold, "Oversold", color = color.green, linestyle = hline.style_dashed)
+
+// Shade the background when RSI is in an extreme zone
+bgcolor(rsiValue > overbought ? color.new(color.red, 88) : rsiValue < oversold ? color.new(color.green, 88) : na)
+
+alertcondition(ta.crossunder(rsiValue, oversold), "RSI oversold", "{{ticker}}: RSI crossed below the oversold level")
+alertcondition(ta.crossover(rsiValue, overbought), "RSI overbought", "{{ticker}}: RSI crossed above the overbought level")

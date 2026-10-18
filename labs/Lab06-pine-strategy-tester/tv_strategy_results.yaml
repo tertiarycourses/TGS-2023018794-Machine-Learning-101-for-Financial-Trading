@@ -1,0 +1,17 @@
+# Copy these from TradingView > Strategy Tester > Performance Summary
+# (AMEX:SPY, 1D, "LCC MA Crossover Strategy", fast 50 / slow 200, 2018-01-01 to 2025-12-31).
+# Leave a value as null if TradingView does not show it. Then run: python -m pipeline reconcile
+symbol: SPY
+fast: 50
+slow: 200
+net_profit_usd: null
+net_profit_pct: null
+closed_trades: null
+open_trades: null
+percent_profitable: null
+profit_factor: null
+max_drawdown_pct: null
+sharpe: null
+sortino: null
+commission_paid_usd: null
+buy_hold_pct: null

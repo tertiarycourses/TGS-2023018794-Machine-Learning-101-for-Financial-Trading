@@ -1,0 +1,4 @@
+# Values read from the TradingView Data Window with LCC Trend and LCC RSI on a 1D chart (default settings).
+# The row below is an EXAMPLE of what TradingView shows by default (unadjusted prices) - overwrite it with your reading.
+symbol,date,close,ema_fast,ema_slow,bb_upper,bb_middle,bb_lower,rsi
+AAPL,2025-12-31,271.86,273.98,269.60,282.35,275.47,268.60,45.64

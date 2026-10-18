@@ -1,0 +1,32 @@
+pipeline:
+  net_profit_usd: 79878.0
+  net_profit_pct: 79.88
+  closed_trades: 4
+  open_trades: 1
+  percent_profitable: 50.0
+  profit_factor: 5.03
+  max_drawdown_pct: -33.72
+  sharpe: 0.55
+  sortino: 0.76
+  commission_paid_usd: 9.0
+  buy_hold_pct: 187.26
+tradingview: {}
+settings:
+- check: Pine Script version 6
+  pass: true
+  detail: //@version=6
+- check: next-bar-open fills (process_orders_on_close = false)
+  pass: true
+  detail: process_orders_on_close = false; pipeline execution = next_open
+- check: commission per order matches config
+  pass: true
+  detail: strategy.commission.cash_per_order 1.0 vs config 1.0
+- check: slippage set
+  pass: true
+  detail: slippage = 2 ticks vs config 0.4 bps
+- check: 100% of equity per trade
+  pass: true
+  detail: default_qty_value = 100
+- check: no pyramiding (one position at a time)
+  pass: true
+  detail: pyramiding = 0

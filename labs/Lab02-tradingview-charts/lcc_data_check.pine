@@ -1,0 +1,59 @@
+//@version=6
+// Lab 02 - Lion City Capital (fictitious, for training)
+// Data-validation panel: prints the values the pipeline's validate stage checks
+// (OHLCV of the selected bar, change vs prior close, 52-week high/low, 20-day
+// average volume) in a table, so you can copy them into tradingview_values.csv.
+// Add to a 1D chart of NASDAQ:AAPL and SGX:D05. Educational use only.
+indicator("LCC Data Check", shorttitle = "LCC Check", overlay = true)
+
+checkDate = input.time(timestamp("2025-12-31T00:00:00"), "Bar to validate")
+showAdj   = input.bool(false, "I ticked 'Adjust data for dividends' (record setting = adjusted)")
+
+isTarget = time == checkDate or (time <= checkDate and time_close > checkDate)
+var float tOpen = na
+var float tHigh = na
+var float tLow = na
+var float tClose = na
+var float tVol = na
+var float tChg = na
+var float tHi52 = na
+var float tLo52 = na
+var float tAvgVol = na
+if isTarget
+    tOpen := open
+    tHigh := high
+    tLow := low
+    tClose := close
+    tVol := volume
+    tChg := close / close[1] - 1
+    tHi52 := ta.highest(high, 252)
+    tLo52 := ta.lowest(low, 252)
+    tAvgVol := ta.sma(volume, 20)
+
+// Mark the bar being validated
+bgcolor(isTarget ? color.new(color.orange, 70) : na, title = "Validated bar")
+
+var table panel = table.new(position.top_right, 2, 11, border_width = 1)
+if barstate.islast
+    table.cell(panel, 0, 0, "LCC data check", text_color = color.white, bgcolor = color.navy)
+    table.cell(panel, 1, 0, syminfo.tickerid, text_color = color.white, bgcolor = color.navy)
+    table.cell(panel, 0, 1, "Date")
+    table.cell(panel, 1, 1, str.format_time(checkDate, "yyyy-MM-dd", syminfo.timezone))
+    table.cell(panel, 0, 2, "Open")
+    table.cell(panel, 1, 2, str.tostring(tOpen, format.mintick))
+    table.cell(panel, 0, 3, "High")
+    table.cell(panel, 1, 3, str.tostring(tHigh, format.mintick))
+    table.cell(panel, 0, 4, "Low")
+    table.cell(panel, 1, 4, str.tostring(tLow, format.mintick))
+    table.cell(panel, 0, 5, "Close")
+    table.cell(panel, 1, 5, str.tostring(tClose, format.mintick))
+    table.cell(panel, 0, 6, "Volume")
+    table.cell(panel, 1, 6, str.tostring(tVol, "#,###"))
+    table.cell(panel, 0, 7, "Change vs prior close")
+    table.cell(panel, 1, 7, str.tostring(tChg * 100, "#.##") + "%")
+    table.cell(panel, 0, 8, "52-week high / low")
+    table.cell(panel, 1, 8, str.tostring(tHi52, format.mintick) + " / " + str.tostring(tLo52, format.mintick))
+    table.cell(panel, 0, 9, "20-day avg volume")
+    table.cell(panel, 1, 9, str.tostring(tAvgVol, "#,###"))
+    table.cell(panel, 0, 10, "setting")
+    table.cell(panel, 1, 10, showAdj ? "adjusted" : "default")

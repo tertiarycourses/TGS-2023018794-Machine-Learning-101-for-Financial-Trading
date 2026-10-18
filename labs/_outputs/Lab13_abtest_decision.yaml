@@ -1,0 +1,20 @@
+a: trend_filter
+b: dip_buy
+alpha: 0.05
+window:
+- '2018-10-16'
+- '2025-12-31'
+welch_t: 0.73636
+welch_p: 0.46156
+paired_t: 0.84513
+paired_p: 0.39815
+mean_diff_daily: 0.00018
+sharpe_diff: 0.31436
+ci:
+- -0.3339146957287191
+- 1.0485777509825174
+share_a_beats_b: 0.8215
+reject_h0: false
+bonferroni_p: 0.0025
+decision: DO NOT REJECT H0 - trend_filter looks better on paper, but the evidence
+  is not reliable; keep both on paper

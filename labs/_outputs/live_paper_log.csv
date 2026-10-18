@@ -1,0 +1,8 @@
+run_time,bar_date,symbol,close,ema_fast,ema_slow,signal,position_before,action,qty,order_id,status,fill_price,equity,checks
+2026-10-18T17:35:14,2025-12-31,SPY,676.635,679.2077,674.6393,1,0.0,BUY,14,0c4f2b0b,accepted,,100000.0,market closed - order will queue (GTC) for the next session
+2026-10-18T17:35:15,2025-12-31,SPY,676.635,679.2077,674.6393,1,0.0,HOLD,0,,,,100000.0,market closed - order will queue (GTC) for the next session; buy order for 14 shares still working
+2026-10-18T17:35:16,2025-12-31,SPY,676.635,679.2077,674.6393,1,0.0,HOLD,0,,,,100000.0,market closed - order will queue (GTC) for the next session; buy order for 14 shares still working
+2026-10-18T17:59:47,2025-12-31,SPY,676.635,679.2077,674.6393,1,0.0,BUY,14,576201be,accepted,,100000.0,market closed - order will queue (GTC) for the next session
+2026-10-18T17:59:48,2025-12-31,SPY,676.635,679.2077,674.6393,1,0.0,HOLD,0,,,,100000.0,market closed - order will queue (GTC) for the next session; buy order for 14 shares still working
+2026-10-18T18:02:23,2025-12-31,SPY,676.635,679.2077,674.6393,1,0.0,BUY,14,a4e4d768,accepted,,100000.0,market closed - order will queue (GTC) for the next session
+2026-10-18T18:02:24,2025-12-31,SPY,676.635,679.2077,674.6393,1,0.0,HOLD,0,,,,100000.0,market closed - order will queue (GTC) for the next session; buy order for 14 shares still working

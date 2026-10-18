@@ -1,0 +1,190 @@
+{
+  "run_time": "2026-10-18T21:11:53",
+  "brain": "rule-based",
+  "broker": "offline-sim",
+  "equity_before": 100000.0,
+  "limits": {
+    "max_position_pct": 0.2,
+    "max_order_value": 25000,
+    "min_confidence": 0.6,
+    "stop_atr": 2.0,
+    "target_atr": 3.0
+  },
+  "symbols": [
+    {
+      "symbol": "NVDA",
+      "as_of": "2025-12-31",
+      "technical": {
+        "agent": "Technical Analyst",
+        "symbol": "NVDA",
+        "close": 186.06,
+        "ema20": 183.61,
+        "ema50": 183.27,
+        "rsi14": 53.4,
+        "macd_hist": 1.227,
+        "atr14": 5.28,
+        "score": 0.75,
+        "summary": "Uptrend (EMA20 > EMA50), RSI 53, MACD histogram positive"
+      },
+      "news": {
+        "agent": "News Analyst",
+        "symbol": "NVDA",
+        "score": 0.25,
+        "n_headlines": 4,
+        "summary": "4 headlines, average lexicon sentiment +0.25",
+        "brain": "rules"
+      },
+      "debate": {
+        "agent": "Researchers",
+        "bull": [
+          "Trend: EMA20 183.61 vs EMA50 183.27",
+          "Momentum: MACD histogram 1.227",
+          "News sentiment +0.25 (4 items)"
+        ],
+        "bear": [],
+        "balance": 0.55,
+        "brain": "rules"
+      },
+      "trader": {
+        "agent": "Trader",
+        "symbol": "NVDA",
+        "action": "buy",
+        "qty": 114,
+        "confidence": 0.85,
+        "rationale": "Debate balance +0.55 -> buy"
+      },
+      "risk_manager": {
+        "agent": "Risk Manager",
+        "symbol": "NVDA",
+        "action": "buy",
+        "qty": 107,
+        "confidence": 0.85,
+        "rationale": "Debate balance +0.55 -> buy",
+        "stop_loss": 175.5,
+        "take_profit": 201.9,
+        "decision": "APPROVED",
+        "notes": [
+          "resized 114 -> 107 shares (cap USD 20,000)",
+          "bracket: stop 175.5 / target 201.9 (ATR 5.28)"
+        ]
+      }
+    },
+    {
+      "symbol": "AAPL",
+      "as_of": "2025-12-31",
+      "technical": {
+        "agent": "Technical Analyst",
+        "symbol": "AAPL",
+        "close": 271.12,
+        "ema20": 273.23,
+        "ema50": 268.8,
+        "rsi14": 45.7,
+        "macd_hist": -0.718,
+        "atr14": 3.96,
+        "score": 0.04,
+        "summary": "Uptrend (EMA20 > EMA50), RSI 46, MACD histogram negative"
+      },
+      "news": {
+        "agent": "News Analyst",
+        "symbol": "AAPL",
+        "score": 0.0,
+        "n_headlines": 3,
+        "summary": "3 headlines, average lexicon sentiment +0.00",
+        "brain": "rules"
+      },
+      "debate": {
+        "agent": "Researchers",
+        "bull": [
+          "Trend: EMA20 273.23 vs EMA50 268.8"
+        ],
+        "bear": [
+          "Momentum: MACD histogram -0.718"
+        ],
+        "balance": 0.02,
+        "brain": "rules"
+      },
+      "trader": {
+        "agent": "Trader",
+        "symbol": "AAPL",
+        "action": "hold",
+        "qty": 0,
+        "confidence": 0.32,
+        "rationale": "Debate balance +0.02 -> hold"
+      },
+      "risk_manager": {
+        "agent": "Risk Manager",
+        "symbol": "AAPL",
+        "action": "hold",
+        "qty": 0,
+        "confidence": 0.32,
+        "rationale": "Debate balance +0.02 -> hold",
+        "decision": "no trade",
+        "notes": [
+          "nothing to do"
+        ]
+      }
+    },
+    {
+      "symbol": "SPY",
+      "as_of": "2025-12-31",
+      "technical": {
+        "agent": "Technical Analyst",
+        "symbol": "SPY",
+        "close": 676.63,
+        "ema20": 676.79,
+        "ema50": 670.19,
+        "rsi14": 51.5,
+        "macd_hist": 0.099,
+        "atr14": 5.94,
+        "score": 0.72,
+        "summary": "Uptrend (EMA20 > EMA50), RSI 52, MACD histogram positive"
+      },
+      "news": {
+        "agent": "News Analyst",
+        "symbol": "SPY",
+        "score": -0.33,
+        "n_headlines": 3,
+        "summary": "3 headlines, average lexicon sentiment -0.33",
+        "brain": "rules"
+      },
+      "debate": {
+        "agent": "Researchers",
+        "bull": [
+          "Trend: EMA20 676.79 vs EMA50 670.19",
+          "Momentum: MACD histogram 0.099"
+        ],
+        "bear": [
+          "News sentiment -0.33 (3 items)"
+        ],
+        "balance": 0.3,
+        "brain": "rules"
+      },
+      "trader": {
+        "agent": "Trader",
+        "symbol": "SPY",
+        "action": "buy",
+        "qty": 22,
+        "confidence": 0.6,
+        "rationale": "Debate balance +0.30 -> buy"
+      },
+      "risk_manager": {
+        "agent": "Risk Manager",
+        "symbol": "SPY",
+        "action": "buy",
+        "qty": 22,
+        "confidence": 0.6,
+        "rationale": "Debate balance +0.30 -> buy",
+        "stop_loss": 664.75,
+        "take_profit": 694.45,
+        "decision": "APPROVED",
+        "notes": [
+          "bracket: stop 664.75 / target 694.45 (ATR 5.94)"
+        ]
+      }
+    }
+  ],
+  "pipeline_risk": [],
+  "human_approval": "not requested (propose-only run)",
+  "orders": [],
+  "equity_after": 100000.0
+}

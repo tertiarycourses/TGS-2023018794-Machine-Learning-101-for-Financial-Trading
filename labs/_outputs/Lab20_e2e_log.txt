@@ -1,0 +1,641 @@
+Lion City Capital (fictitious) - pipeline e2e run 2026-10-18T21:11:45
+
+============================== stage 01 check ==============================
+
+[1] Configuration  pipeline/config.yaml
+    firm Lion City Capital (fictitious) | mode auto | broker alpaca paper=True
+    universe 9 symbols: SPY QQQ AAPL MSFT NVDA JPM XLF GLD TLT
+    strategy ema_cross {'fast': 10, 'slow': 30} on SPY | execution next_open | costs alpaca_retail
+    risk: max position 95%, max daily loss 2%, max order USD 100,000, kill switch file KILL_SWITCH
+    validation: OK
+
+[2] Libraries
+    OK   pandas      2.3.0
+    OK   numpy       2.3.0
+    OK   scipy       1.18.0
+    OK   sklearn     1.7.0
+    OK   xgboost     2.1.4
+    OK   matplotlib  3.10.8
+    OK   yaml        6.0.2
+    OK   alpaca      0.43.2
+
+[3] Secrets (names from config.yaml, values from the environment / .env)
+    APCA_API_KEY_ID      not set
+    APCA_API_SECRET_KEY  not set
+    WEBHOOK_SECRET       not set
+    ANTHROPIC_API_KEY    not set
+
+[4] Paper broker (offline-sim) - offline simulator
+    account SIM-LCC-0001 | status ACTIVE | equity USD 100,000.00 | cash USD 100,000.00 | buying power USD 100,000.00 | positions 0
+
+[5] Market clock
+    Sun 2026-10-18 09:11 New York = Sun 21:11 Singapore | session: CLOSED (market closed: a GTC limit order queues for the next session)
+
+[6] Market data - Bundled CSV (Yahoo Finance via yfinance)
+                  open    high     low   close      volume
+    timestamp                                             
+    2025-12-29  682.21  683.86  680.75  682.52  62559500.0
+    2025-12-30  682.12  683.22  681.26  681.69  47160700.0
+    2025-12-31  681.81  682.03  676.43  676.64  74144800.0
+
+RESULT: PIPELINE READY - paper trading only
+
+============================== stage 02 validate ==============================
+TradingView values file: Lab02-tradingview-charts/tradingview_values.csv (2 rows)
+
+NASDAQ:AAPL (AAPL, USD) bar for 2025-12-31
+                                  open      high       low     close        volume
+  RAW (TradingView default)     273.06    273.68    271.75    271.86    27,293,600
+  ADJUSTED (research)           272.32    272.94    271.01    271.12    27,293,600
+  dividend-adjustment factor 0.9973: adjusted = raw x factor, because dividends paid AFTER this bar (up to the data download date) are back-adjusted into history
+  change vs prior close -0.45% | 52-week high/low 288.62 / 169.21 (raw) | 20-day avg volume 41,213,580
+  TradingView (you)             273.06    273.68    271.75    271.86    27,293,600
+  diff vs RAW      open +0.000%  high +0.000%  low +0.000%  close +0.000%  volume +0.000%
+  diff vs ADJUSTED open +0.272%  high +0.272%  low +0.272%  close +0.272%  volume +0.000%
+  -> PASS - TradingView matches RAW (dividend-unadjusted) bars
+
+SGX:D05 (D05.SI, SGD) bar for 2025-12-31
+                                  open      high       low     close        volume
+  RAW (TradingView default)      56.50     56.60     56.11     56.36     2,053,200
+  ADJUSTED (research)            54.35     54.45     53.98     54.22     2,053,200
+  dividend-adjustment factor 0.9620: adjusted = raw x factor, because dividends paid AFTER this bar (up to the data download date) are back-adjusted into history
+  change vs prior close -0.25% | 52-week high/low 56.75 / 36.30 (raw) | 20-day avg volume 3,259,751
+  TradingView (you)              56.50     56.60     56.11     56.36     2,053,200
+  diff vs RAW      open +0.000%  high +0.000%  low +0.000%  close +0.000%  volume +0.000%
+  diff vs ADJUSTED open +3.950%  high +3.950%  low +3.950%  close +3.950%  volume +0.000%
+  -> PASS - TradingView matches RAW (dividend-unadjusted) bars
+
+Validation report -> _outputs/Lab02_validation_report.csv
+RESULT: 2/2 watch-list symbols validated against TradingView
+[chart] saved _outputs/Lab02_validation.png
+
+============================== stage 03 ingest ==============================
+Source: Bundled CSV (Yahoo Finance via yfinance) | 12 symbols x 4 timeframes -> _cache/
+
+Data-quality report, daily bars (0 = clean):
+symbol  rows      first       last  missing_values  duplicate_timestamps  gaps_over_4_days  zero_volume  big_moves  high_below_low status
+  AAPL  2011 2018-01-02 2025-12-31               0                     0                 0            0         12               0  CHECK
+   BAC  2011 2018-01-02 2025-12-31               0                     0                 0            0         11               0  CHECK
+   GLD  2011 2018-01-02 2025-12-31               0                     0                 0            0          0               0     OK
+   JPM  2011 2018-01-02 2025-12-31               0                     0                 0            0         12               0  CHECK
+    KO  2011 2018-01-02 2025-12-31               0                     0                 0            0          3               0  CHECK
+  MSFT  2011 2018-01-02 2025-12-31               0                     0                 0            0          7               0  CHECK
+  NVDA  2011 2018-01-02 2025-12-31               0                     0                 0            0         40               0  CHECK
+   PEP  2011 2018-01-02 2025-12-31               0                     0                 0            0          6               0  CHECK
+   QQQ  2011 2018-01-02 2025-12-31               0                     0                 0            0          4               0  CHECK
+   SPY  2011 2018-01-02 2025-12-31               0                     0                 0            0          5               0  CHECK
+   TLT  2011 2018-01-02 2025-12-31               0                     0                 0            0          0               0     OK
+   XLF  2011 2018-01-02 2025-12-31               0                     0                 0            0          8               0  CHECK
+
+Bars cached per timeframe (all symbols / largest single file):
+  1Day     24,132 bars  (max 2,011 per symbol)
+  1Week     5,016 bars  (max 418 per symbol)
+  1Month    1,152 bars  (max 96 per symbol)
+  1Hour       440 bars  (max 440 per symbol)  - 11 symbols not available offline
+
+Unstructured data: 12 headlines (bundled SYNTHETIC sample (training only - not real news)) for NVDA 4, AAPL 3, SPY 3, JPM 2
+
+Return statistics (daily, annualised):
+  SPY   mean  15.14%  vol  19.46%  skew -0.30  excess kurtosis 13.12  moves > 8%: 5
+  AAPL  mean  28.66%  vol  30.79%  skew  0.16  excess kurtosis  6.45  moves > 8%: 12
+  correlation SPY-AAPL 0.77  -> fat tails: never assume normal returns for risk
+
+Forms of data and the 3 Vs of big data:
+  - Bars (OHLCV)       structured           Alpaca StockBarsRequest          ingested here - every stage uses them
+  - Quotes (bid/ask)   structured           Alpaca StockLatestQuoteRequest   spread -> execution cost (Lab 8)
+  - Trades (ticks)     structured           Alpaca StockTradesRequest        VWAP, order flow; high velocity
+  - Corporate actions  structured           Alpaca corporate actions API     splits / dividends -> adjustment (Lab 2)
+  - Fundamentals       structured           filings, data vendors            earnings, valuation ratios
+  - News headlines     unstructured text    Alpaca NewsClient / NewsRequest  ingested here - sentiment agent (Lab 20)
+  - Alternative data   unstructured / mixed web, satellite, card spend, social big-data signals; needs governance
+  Volume  : 30,740 bars = 153,700 numbers cached today; 1-minute bars for 500 stocks would add ~49 million rows a year
+  Velocity: daily bars arrive once a day, hourly 7 a day, ticks thousands a second
+  Variety : structured bars + unstructured headlines -> different storage, cleaning and governance
+
+Quality report -> _outputs/Lab03_data_quality.csv | manifest -> _cache/manifest.json
+RESULT: 37 files cached, 0 failed quality checks
+[chart] saved _outputs/Lab03_market_data.png
+
+============================== stage 04 hypothesis ==============================
+
+Card H-001: SPY buy-the-dip after a losing streak  (spy_dip_after_streak.yaml)
+  H1: Mean next-day return after >= 3 consecutive down closes is HIGHER than on all other days
+  H0: Mean next-day return after >= 3 consecutive down closes EQUALS the mean on all other days
+  Sample 2018-01-02 to 2025-12-30 (2010 days) | signal {'type': 'losing_streak', 'n': 3} | outcome: 1-day forward return
+  Signal days                     :   178  (8.9% of days)
+  Mean forward return | signal    : +0.2828%
+  Mean forward return | other     : +0.0384%
+  Unconditional mean (all days)   : +0.0601%
+  Hit rate | signal vs all        : 56.7% vs 55.4%
+  95% bootstrap CI (signal mean)  : [+0.0531%, +0.5136%]
+  Welch t-test signal vs other    : t = 2.03, p = 0.044
+  Edge vs other days              : +24.4 bps (rule: p < 0.05 and edge >= 3 bps)
+  DECISION: SUPPORTED - reject H0; promote the idea to the signal and backtest stages
+
+Robustness grid (same card, other parameters and symbols):
+symbol  n  signal_days  edge_bps    t     p      decision
+   SPY  2          394       8.9 1.05 0.296 not supported
+   SPY  3          178      24.4 2.03 0.044     supported
+   SPY  4           76      42.8 1.96 0.053 not supported
+   QQQ  2          374      20.4 2.16 0.031     supported
+   QQQ  3          150      38.1 2.78 0.006     supported
+   QQQ  4           53      23.6 1.05 0.296 not supported
+  -> 3 of 6 variants supported. Count every variant you try: 6 tests at alpha 0.05 -> Bonferroni p < 0.0083
+
+Forward return by losing-streak length (the shape of the effect):
+    count  mean %  std err %
+0    1119   0.040      0.031
+1     497   0.049      0.057
+2     216   0.007      0.109
+3     102   0.142      0.125
+4      49   0.439      0.256
+5+     27   0.533      0.402
+[chart] saved _outputs/Lab04_hypothesis.png
+Result card -> _outputs/Lab04_hypothesis_result.yaml
+
+============================== stage 05 indicators ==============================
+
+AAPL on 2025-12-31 - lcc_trend_bands.pine (EMA 20/50, BB 20/2) and lcc_rsi.pine (RSI 14):
+          Python ADJUSTED Python RAW (TV default) TradingView (you) diff vs RAW
+close              271.12                  271.86            271.86     +0.000%
+ema_fast           273.23                  273.98            273.98     -0.001%
+ema_slow           268.80                  269.60            269.60     +0.000%
+bb_upper           281.58                  282.35            282.35     +0.001%
+bb_middle          274.72                  275.47            275.47     -0.001%
+bb_lower           267.87                  268.60            268.60     +0.000%
+rsi                 45.69                   45.64             45.64     -0.006%
+  trend UP (EMA20 > EMA50) | close inside the bands | RSI 45.7
+  Since 2024-06-01: 2 bullish and 2 bearish EMA crosses, 3 RSI-oversold and 15 RSI-overbought alert events
+  -> largest gap to TradingView 0.006%: PASS (<= 0.5%, warm-up/rounding only)
+  Indicator table -> _outputs/Lab05_AAPL_indicators.csv
+[chart] saved _outputs/Lab05_pine_preview.png
+
+============================== stage 06 reconcile ==============================
+
+[1] Pine strategy lcc_ma_crossover_strategy.pine: inputs {'fastLen': 50, 'slowLen': 200}
+[2] Settings reconciliation (Pine strategy() vs pipeline):
+    PASS  Pine Script version 6                                   //@version=6
+    PASS  next-bar-open fills (process_orders_on_close = false)   process_orders_on_close = false; pipeline execution = next_open
+    PASS  commission per order matches config                     strategy.commission.cash_per_order 1.0 vs config 1.0
+    PASS  slippage set                                            slippage = 2 ticks vs config 0.4 bps
+    PASS  100% of equity per trade                                default_qty_value = 100
+    PASS  no pyramiding (one position at a time)                  pyramiding = 0
+
+[3] Pipeline backtest: SPY SMA 50/200, 2018-01-02 to 2025-12-31, next-bar-open fills, TradingView settings
+    Strategy Tester metric      pipeline   TradingView  difference
+    Net profit (USD)             79878.0             -            
+    Net profit (%)                 79.88             -            
+    Closed trades                      4             -            
+    Open trades                        1             -            
+    Percent profitable              50.0             -            
+    Profit factor                   5.03             -            
+    Max drawdown (%)              -33.72             -            
+    Sharpe ratio                    0.55             -            
+    Sortino ratio                   0.76             -            
+    Commission paid (USD)            9.0             -            
+    Buy & hold return (%)         187.26             -            
+    -> copy the Performance Summary into Lab06-pine-strategy-tester/tv_strategy_results.yaml and re-run to reconcile
+
+[4] Trade list (compare with the 'List of Trades' tab):
+    entry_date  exit_date        side  entry_price  exit_price  net_return
+    2018-10-17 2018-12-13        long     248.8017    236.4520     -0.0497
+    2019-03-27 2020-04-01        long     251.9574    226.8045     -0.0999
+    2020-07-07 2022-03-17        long     289.7185    406.9626      0.4045
+    2023-01-27 2025-04-17        long     385.0172    519.0306      0.3479
+    2025-06-30 2025-12-31 long (open)     609.1017    681.8146      0.1108
+
+[5] If the numbers differ, check in this order:
+    1. adjusted (pipeline) vs unadjusted (TradingView default) prices
+    2. history start: the pipeline data begins 2018-01-02, so SMA 200 is only warm from Oct 2018
+    3. whole shares on TradingView vs fractional equity in the pipeline
+    4. slippage in ticks (TradingView) vs basis points (pipeline)
+
+RESULT: settings reconciled; pipeline net profit USD 79,878 (+79.88%) vs buy and hold +187.26%
+Reconciliation -> _outputs/Lab06_reconciliation.yaml
+[chart] saved _outputs/Lab06_crosscheck.png
+
+============================== stage 07 signals ==============================
+
+Signal library on SPY 2018-01-02 to 2025-12-31 (target decided at close t, held from bar t+1):
+            signal         family                              params  latest_target  entries exposure  avg_hold_bars last_change lookahead
+         ema_cross          trend            {'fast': 10, 'slow': 30}              1       26      71%           54.7  2025-11-28      PASS
+         sma_cross          trend           {'fast': 50, 'slow': 200}              1        5      70%          282.0  2025-06-27      PASS
+      trend_filter          trend                     {'window': 200}              1       24      71%           59.3  2025-05-12      PASS
+     rsi_reversion mean reversion   {'n': 2, 'entry': 10, 'exit': 70}              1       88      20%            4.6  2025-12-31      PASS
+           dip_buy mean reversion            {'n_down': 3, 'hold': 3}              1      102      19%            3.7  2025-12-30      PASS
+          momentum       momentum {'lookback': 126, 'threshold': 0.0}              1       33      72%           43.7  2025-06-23      PASS
+ donchian_breakout       breakout           {'entry': 55, 'exit': 20}              1       20      52%           52.3  2025-12-23      PASS
+bollinger_breakout       breakout            {'window': 20, 'k': 2.0}              0       37      34%           18.7  2025-11-06      PASS
+
+Next-bar alignment, ema_cross: target changes to 1 at the close of 2025-11-28; the position is held from 2025-12-01 (held on 2025-11-28 = 0)
+
+Target positions for the configured strategy ema_cross {'fast': 10, 'slow': 30} across the universe:
+symbol      as_of  close  target last_change
+   SPY 2025-12-31 676.64       1  2025-11-28
+   QQQ 2025-12-31 612.22       1  2025-12-19
+  AAPL 2025-12-31 271.12       1  2025-08-06
+  MSFT 2025-12-31 480.57       0  2025-11-06
+  NVDA 2025-12-31 186.06       1  2025-12-26
+   JPM 2025-12-31 316.13       1  2025-12-01
+   XLF 2025-12-31  54.11       1  2025-12-02
+   GLD 2025-12-31 396.31       1  2025-08-22
+   TLT 2025-12-31  84.22       0  2025-12-02
+  -> 7 of 9 symbols long. Targets -> _outputs/Lab07_targets.csv (input to the execution stage)
+[chart] saved _outputs/Lab07_signals.png
+
+============================== stage 08 execute ==============================
+
+[1] Market clock: Sun 2026-10-18 09:11 New York = Sun 21:11 Singapore | session: REGULAR (all order types accepted)
+    allowed now: market, limit, stop, bracket | time_in_force day/gtc | extended_hours=False
+
+[2] Account SIM-LCC-0001 (offline-sim): equity USD 100,000.00, cash USD 100,000.00; targets {'SPY': 0.1357142857142857, 'QQQ': 0.1357142857142857, 'AAPL': 0.1357142857142857, 'NVDA': 0.1357142857142857, 'JPM': 0.1357142857142857, 'XLF': 0.1357142857142857, 'GLD': 0.1357142857142857}
+
+[3] Plan (target vs actual) -> orders:
+    -> BUY 20 SPY | MARKET DAY | quote bid 676.60 / ask 676.67 (simulator last price) | lcc-20261018-SPY-buy-20
+       lifecycle: filled
+       cb290e27  SPY   buy  market qty=20  status=filled filled@676.70
+    -> BUY 22 QQQ | MARKET DAY | quote bid 612.19 / ask 612.26 (simulator last price) | lcc-20261018-QQQ-buy-22
+       lifecycle: filled
+       1ce68fe4  QQQ   buy  market qty=22  status=filled filled@612.29
+    -> BUY 50 AAPL | MARKET DAY | quote bid 271.11 / ask 271.14 (simulator last price) | lcc-20261018-AAPL-buy-50
+       lifecycle: filled
+       873b8214  AAPL  buy  market qty=50  status=filled filled@271.15
+    -> BUY 72 NVDA | MARKET DAY | quote bid 186.06 / ask 186.07 (simulator last price) | lcc-20261018-NVDA-buy-72
+       lifecycle: filled
+       1ee6518c  NVDA  buy  market qty=72  status=filled filled@186.08
+    -> BUY 42 JPM | MARKET DAY | quote bid 316.12 / ask 316.15 (simulator last price) | lcc-20261018-JPM-buy-42
+       lifecycle: filled
+       997ff3b1  JPM   buy  market qty=42  status=filled filled@316.16
+    -> BUY 250 XLF | MARKET DAY | quote bid 54.11 / ask 54.11 (simulator last price) | lcc-20261018-XLF-buy-250
+       lifecycle: filled
+       bc330017  XLF   buy  market qty=250  status=filled filled@54.11
+    -> BUY 34 GLD | MARKET DAY | quote bid 396.29 / ask 396.33 (simulator last price) | lcc-20261018-GLD-buy-34
+       lifecycle: filled
+       d504db5d  GLD   buy  market qty=34  status=filled filled@396.35
+
+[4] Idempotency check - the same decision run again:
+    SPY   at target (20 shares; held 20, pending +0) - no order
+    QQQ   at target (22 shares; held 22, pending +0) - no order
+    AAPL  at target (50 shares; held 50, pending +0) - no order
+    NVDA  at target (72 shares; held 72, pending +0) - no order
+    JPM   at target (42 shares; held 42, pending +0) - no order
+    XLF   at target (250 shares; held 250, pending +0) - no order
+    GLD   at target (34 shares; held 34, pending +0) - no order
+    no new orders: positions plus pending orders already match the targets
+    DUPLICATE lcc-20261018-SPY-buy-20: already submitted (status filled) - not sent again
+
+[5] Positions:
+    SPY    qty 20  avg entry 676.70  market value USD 13,532.70  unrealised P&L -1.35
+    QQQ    qty 22  avg entry 612.29  market value USD 13,468.95  unrealised P&L -1.35
+    AAPL   qty 50  avg entry 271.15  market value USD 13,556.10  unrealised P&L -1.36
+    NVDA   qty 72  avg entry 186.08  market value USD 13,396.65  unrealised P&L -1.34
+    JPM    qty 42  avg entry 316.16  market value USD 13,277.52  unrealised P&L -1.33
+    XLF    qty 250  avg entry 54.11  market value USD 13,527.05  unrealised P&L -1.35
+    GLD    qty 34  avg entry 396.35  market value USD 13,474.54  unrealised P&L -1.35
+    open orders: 0
+
+RESULT: 7 orders (7 filled, 0 working/queued), equity USD 99,990.58, session regular
+
+============================== stage 09 evaluate ==============================
+
+SPY 2018-10-16 to 2025-12-31 | next-bar-open fills | costs: Alpaca commission-free | ranked by Sharpe
+                      CAGR Ann. volatility Sharpe Sortino Max drawdown Calmar Trades Win rate Profit factor Exposure Turnover   Alpha  Beta
+ema_cross           11.09%          11.87%   0.95    1.32      -14.19%   0.78     26   50.00%          3.54   72.02%     5.98   5.51%  0.35
+SPY buy & hold      15.28%          19.93%   0.81    1.15      -33.72%   0.45      0        -             -  100.00%     0.14   0.00%  1.00
+trend_filter         9.70%          12.42%   0.81    1.09      -19.36%   0.50     24   41.67%          3.79   78.53%     6.54   3.83%  0.38
+momentum             9.36%          13.04%   0.75    1.02      -18.95%   0.49     33   51.52%          3.82   75.77%     8.48   2.91%  0.43
+sma_cross            8.49%          16.55%   0.58    0.79      -33.72%   0.25      5   60.00%          5.75   77.76%     1.25  -1.65%  0.69
+donchian_breakout    4.42%           9.32%   0.51    0.68      -24.30%   0.18     20   65.00%          2.25   52.81%     5.15   1.24%  0.22
+dip_buy              4.97%          11.07%   0.49    0.71      -23.93%   0.21    102   57.84%          1.62   18.76%    25.17   0.51%  0.31
+rsi_reversion        4.64%          12.89%   0.42    0.60      -29.39%   0.16     87   65.52%          1.48   19.54%    21.97  -1.45%  0.42
+bollinger_breakout   2.33%           7.45%   0.35    0.47      -10.16%   0.23     37   45.95%          1.65   35.15%     9.18   0.32%  0.14
+
+  Beat buy & hold on Sharpe: ema_cross
+  Smaller max drawdown than buy & hold: 7 of 8 strategies
+
+  Sharpe by hand (trend_filter): mean 0.00040 / stdev 0.00782 x sqrt(252) = 0.81
+  Worst trend_filter day 2020-06-11 (-5.76%); worst SPY day 2020-03-16 (-10.94%); SPY drawdown trough 2020-03-23
+  Metrics table -> _outputs/Lab09_metrics.csv
+[chart] saved _outputs/Lab09_metrics.png
+
+============================== stage 10 search ==============================
+
+Tested 76 parameter sets on SPY | in-sample to 2021-12-31, out-of-sample from 2022-01-01 | costs: Alpaca commission-free
+Buy & hold Sharpe: in-sample 0.87, out-of-sample 0.67
+
+Decay report - best set per family, chosen on IN-SAMPLE Sharpe only:
+  bollinger_breakout  {'window': 20, 'k': 1.0}             IS  0.91 -> OOS  1.04  (decay +0.13, OOS rank 3 of 76, trades 58)
+  rsi_reversion       {'n': 2, 'entry': 30, 'exit': 70}    IS  0.60 -> OOS  0.74  (decay +0.13, OOS rank 22 of 76, trades 179)
+  sma_cross           {'fast': 10, 'slow': 100}            IS  1.23 -> OOS  0.70  (decay -0.53, OOS rank 26 of 76, trades 12)
+
+Top 5 by in-sample Sharpe:
+   family                    params  IS_sharpe  OOS_sharpe  decay  OOS_rank
+sma_cross {'fast': 10, 'slow': 100}      1.230       0.704 -0.526        26
+sma_cross  {'fast': 20, 'slow': 50}      1.140       0.256 -0.885        62
+sma_cross  {'fast': 5, 'slow': 100}      1.132       0.561 -0.572        47
+sma_cross  {'fast': 5, 'slow': 150}      1.128       0.703 -0.425        27
+sma_cross  {'fast': 5, 'slow': 250}      1.087       0.410 -0.677        55
+
+  Rank correlation IS vs OOS Sharpe across 76 sets: 0.06  (near 0 = IS ranking has little value)
+  Average decay of the top 5: -0.62 Sharpe points
+  Share of ALL sets that beat buy & hold out-of-sample: 43%
+
+  Single best MA cell {'fast': 10, 'slow': 100}: IS 1.23 -> OOS 0.70
+  Robust MA region   {'fast': 5, 'slow': 50}: neighbour-average IS 1.04, own IS 0.92 -> OOS 0.44
+  -> To promote a set, edit pipeline/config.yaml strategy: {name: sma_cross, params: {'fast': 5, 'slow': 50}} and re-run evaluate + diagnose first.
+  Full grid -> _outputs/Lab10_grid_results.csv; decay report -> _outputs/Lab10_decay_report.csv
+[chart] saved _outputs/Lab10_grid_heatmap.png
+
+============================== stage 11 ml ==============================
+
+Samples 1811 | features 14 | base rate (share of up days) 55.4%
+Walk-forward folds (train on the past, test on the next block, gap 1 day):
+  fold 1: train 2018-10-16..2020-01-02  test 2020-01-06..2021-03-16
+  fold 2: train 2018-10-16..2021-03-15  test 2021-03-17..2022-05-24
+  fold 3: train 2018-10-16..2022-05-23  test 2022-05-25..2023-08-07
+  fold 4: train 2018-10-16..2023-08-04  test 2023-08-08..2024-10-16
+  fold 5: train 2018-10-16..2024-10-15  test 2024-10-17..2025-12-30
+
+Out-of-sample classification metrics:
+                     accuracy  precision    AUC  share predicted up
+model                                                              
+Logistic regression     0.535      0.550  0.481               0.872
+Random forest           0.542      0.550  0.483               0.924
+XGBoost                 0.519      0.549  0.497               0.720
+  (always predicting 'up' scores accuracy 0.551, AUC 0.500)
+
+ML signal backtest 2020-01-06..2025-12-31 (long if P(up) > 0.55, next-open fills, Alpaca commission-free):
+             Buy & hold SPY Logistic regression Random forest  XGBoost
+CAGR                 14.98%               9.19%         7.70%    4.00%
+Sharpe                 0.78                0.61          0.54     0.32
+Max drawdown        -33.72%             -27.75%       -27.86%  -38.12%
+Exposure             99.93%              61.35%        66.87%   59.50%
+Trades                    1                 249           224      288
+Turnover               0.17               83.16         74.80    96.22
+  VERDICT: NO EDGE - AUC within noise of 0.5; keep the ML signal out of the live strategy
+  Out-of-sample probabilities -> _outputs/Lab11_ml_probabilities.csv
+[chart] saved _outputs/Lab11_ml_strategy.png
+
+============================== stage 12 regime ==============================
+
+[1] PCA on 9 assets x 2010 days
+  PC1:  56.8% of variance  (cumulative  56.8%)
+  PC2:  15.5% of variance  (cumulative  72.3%)
+  PC3:  10.3% of variance  (cumulative  82.5%)
+  PC4:   7.6% of variance  (cumulative  90.1%)
+  Loadings:
+         PC1   PC2   PC3
+  SPY   0.43  0.03  0.07
+  QQQ   0.42  0.16 -0.16
+  AAPL  0.36  0.14 -0.19
+  MSFT  0.38  0.15 -0.23
+  NVDA  0.33  0.20 -0.33
+  JPM   0.33 -0.35  0.47
+  XLF   0.37 -0.26  0.39
+  GLD   0.03  0.56  0.63
+  TLT  -0.09  0.63  0.10
+  -> PC1 = broad equity factor; TLT and GLD load differently (diversifiers)
+
+[2] K-means (3 clusters, full-sample fit = hindsight, for description only):
+                     vol_21  ret_21  ret_63  dist_sma200  corr_spy_tlt  days  share
+  Low vol             0.127   0.023   0.066        0.086         0.174   654  0.361
+  Moderate vol        0.137   0.026   0.068        0.082        -0.334   786  0.434
+  High vol (stress)   0.304  -0.033  -0.077       -0.057        -0.129   372  0.205
+  Next-day SPY performance by regime:
+                     days  B&H Sharpe  Trend-filter Sharpe
+  regime                                                  
+  Low vol             654        0.66                 1.23
+  Moderate vol        786        1.20                 1.04
+  High vol (stress)   372        0.73                -0.45
+
+[3] Walk-forward regimes 2020-01-02 to 2025-12-31 (refit each January on past data):
+  regime
+  Low vol              1061
+  Moderate vol          383
+  High vol (stress)      64
+  Latest regime (2025-12-31): Low vol -> gate is OPEN (signals pass through)
+
+[4] Regime gate, SPY 2020-01-02 to 2025-12-31 (net of Alpaca commission-free costs):
+        signal version   CAGR  Sharpe Max drawdown Exposure  Trades
+     ema_cross ungated 11.24%    0.91      -14.19%   73.81%      19
+     ema_cross   gated 10.51%    0.89      -14.19%   72.21%      19
+  trend_filter ungated 11.04%    0.89      -19.36%   78.65%      18
+  trend_filter   gated  9.57%    0.80      -18.89%   78.12%      20
+       dip_buy ungated  6.79%    0.63      -17.98%   18.97%      78
+       dip_buy   gated  6.78%    0.72      -12.37%   18.24%      76
+  -> the gate improved Sharpe for: dip_buy. A gate is a model too: diagnose and A/B test it before it goes live.
+  Walk-forward labels -> _outputs/Lab12_regime_labels.csv
+[chart] saved _outputs/Lab12_regimes.png
+
+============================== stage 13 abtest ==============================
+
+SPY 2018-10-16 to 2025-12-31 (1812 days), costs Alpaca commission-free
+                A: trend_filter B: dip_buy
+CAGR                      9.70%      4.97%
+Ann. volatility          12.42%     11.07%
+Sharpe                     0.81       0.49
+Max drawdown            -19.36%    -23.93%
+Exposure                 78.53%     18.76%
+Trades                       24        102
+
+H0: trend_filter and dip_buy have the same expected daily return and Sharpe  |  alpha = 0.05
+  1. Welch t-test (independent)  : t =  0.74, p = 0.462
+  2. Paired t-test on A - B      : t =  0.85, p = 0.398 (mean diff 0.00018/day)
+  3. Sharpe difference A - B     : +0.31, 95% block-bootstrap CI [-0.33, +1.05]; A beats B in 82% of samples
+
+DECISION: DO NOT REJECT H0 - trend_filter looks better on paper, but the evidence is not reliable; keep both on paper
+  Multiple testing: with 20 variants tried, Bonferroni requires p < 0.0025
+  Decision record -> _outputs/Lab13_abtest_decision.yaml
+[chart] saved _outputs/Lab13_ab_test.png
+
+============================== stage 14 pairs ==============================
+
+[1] Pair screen on the formation period 2018-01-01 to 2022-12-31 (Engle-Granger, 5% critical value -3.34):
+  Pair       corr(returns)    beta    ADF t  cointegrated at 5%?
+  KO/PEP              0.75    0.76    -3.36  YES
+  JPM/BAC             0.93    0.86    -2.08  no
+  XLF/JPM             0.94    0.92    -1.89  no
+  High correlation does not imply cointegration; screening many pairs inflates false positives.
+
+[2] Chosen pair KO/PEP: hedge ratio beta = 0.756 (short 0.76 of PEP per 1 of KO), ADF t = -3.36, half-life = 39 days
+
+[3] Out-of-sample 2023-01-01 to 2025-12-31 (entry |z| > 2.0, exit |z| < 0.5, 60-day z, 5 bps per leg per side):
+                           Return    CAGR     Vol  Sharpe   MaxDD
+  Pairs (gross)             -9.4%   -3.3%    6.0%   -0.53  -20.2%
+  Pairs (net of costs)     -10.6%   -3.7%    6.0%   -0.60  -20.5%
+  SPY buy and hold          86.3%   23.2%   15.3%    1.44  -18.8%
+  Trades opened: 13 | time in market: 59% | beta to SPY: +0.02 | correlation to SPY: +0.04
+
+[4] Latest spread z +0.65 -> spread position +0 -> leg targets {'KO': 0.0, 'PEP': 0.0}
+  Market-neutral check: beta near 0 confirms the hedge. Short legs need a margin account; the automation stages are long-only, so this sleeve stays on paper.
+[chart] saved _outputs/Lab14_pairs_trading.png
+
+============================== stage 15 backtest ==============================
+
+SPY 2018-01-02 to 2025-12-31, USD 100,000 start, next-bar-open fills:
+    strategy          cost scenario gross CAGR net CAGR cost drag  net Sharpe  executions commission $ spread $ slippage $ reg fees $ total cost $
+     dip_buy              zero cost      5.09%    5.09%     0.00%        0.51         203            0        0          0          0            0
+     dip_buy Alpaca commission-free      5.09%    4.65%     0.44%        0.48         203            0    1,127      2,254        317        3,698
+     dip_buy       Per-share broker      5.09%    4.21%     0.87%        0.44         203          301    2,214      4,427        311        7,253
+     dip_buy        High-cost route      5.09%    0.47%     4.62%        0.10         203       19,024    4,756      9,512        268       33,560
+trend_filter              zero cost      8.80%    8.80%     0.00%        0.78          47            0        0          0          0            0
+trend_filter Alpaca commission-free      8.80%    8.70%     0.10%        0.77          47            0      274        547         76          897
+trend_filter       Per-share broker      8.80%    8.59%     0.21%        0.76          47           79      545      1,090         76        1,789
+trend_filter        High-cost route      8.80%    7.68%     1.12%        0.69          47        5,257    1,314      2,629         73        9,273
+
+Break-even one-way cost (net CAGR = 0) vs the average gross trade:
+  dip_buy              19.5 bps per side | 102 round trips, average gross trade  41.7 bps
+  trend_filter        142.3 bps per side | 24 round trips, average gross trade 347.3 bps
+  -> a strategy whose average trade is only a few times its round-trip cost is fragile
+
+Execution-timing sensitivity (Alpaca-style costs):
+  dip_buy            next-bar OPEN CAGR  4.65% Sharpe 0.48 | next-bar CLOSE CAGR  7.22% Sharpe 0.71
+  trend_filter       next-bar OPEN CAGR  8.70% Sharpe 0.77 | next-bar CLOSE CAGR  8.66% Sharpe 0.77
+Cost scenarios -> _outputs/Lab15_cost_scenarios.csv
+[chart] saved _outputs/Lab15_costs.png
+
+============================== stage 16 run ==============================
+Forward-test replay ema_cross {'fast': 10, 'slow': 30} on SPY, 2025-01-02 to 2025-12-31 (max position 95%, whole shares, fills at the open):
+  2025-01-21  close   591.43  EMA 581.1843 / 580.7815  -> BUY      159 filled   equity   99,990.55  [all checks passed]
+  2025-02-27  close   573.78  EMA 586.9368 / 588.7281  -> SELL     159 filled   equity   96,806.56  [all checks passed]
+  2025-05-02  close   557.51  EMA 541.2957 / 539.4475  -> BUY      166 filled   equity   96,797.37  [all checks passed]
+  2025-11-19  close   655.56  EMA   663.15 /  663.925  -> SELL     166 filled   equity  115,434.28  [all checks passed]
+  2025-11-28  close   676.10  EMA 665.2152 / 663.8816  -> BUY      163 filled   equity  115,423.33  [all checks passed]
+
+Forward test 2025-01-02 to 2025-12-31: 250 sessions, 5 orders
+  Equity: USD 100,000.00 -> USD 116,249.79  (+16.25%)
+  SPY buy & hold over the same days: +17.06%
+  Decision log -> _outputs/trade_log.csv (250 rows); equity -> _outputs/Lab16_equity_log.csv
+[chart] saved _outputs/Lab16_forward_test.png
+
+============================== stage 17 webhook ==============================
+WARNING: demo secret in use. Set WEBHOOK_SECRET in labs/.env before exposing this server.
+Listening on http://127.0.0.1:58139/webhook (health: /health) | broker offline-sim | session regular | kill switch off
+    -> BUY 5 SPY | MARKET DAY | quote bid 676.60 / ask 676.67 (simulator last price) | lcc-tvt1-SPY-buy-5
+       lifecycle: filled
+       744cfd8a  SPY   buy  market qty=5  status=filled filled@676.70
+  [200] {'result': 'order submitted', 'alert_id': 't1', 'pipeline_signal': 1, 'signal_agrees': True, 'order_id': '744cfd8a-582c-436b-a6da-d2fc47955226', 'status': 'filled', 'symbol': 'SPY', 'side': 'buy', 'qty': 5.0, 'filled_avg_price': '676.7027'}
+1. valid BUY 5 SPY                 -> HTTP 200 (expected 200) OK: {"result": "order submitted", "alert_id": "t1", "pipeline_signal": 1, "signal_agrees": true, "order_id": "744c
+    -> SELL 5 SPY | MARKET DAY | quote bid 676.60 / ask 676.67 (simulator last price) | lcc-tvt2-SPY-sell-5
+       lifecycle: filled
+       107511db  SPY   sell market qty=5  status=filled filled@676.57
+  [200] {'result': 'order submitted', 'alert_id': 't2', 'pipeline_signal': 1, 'signal_agrees': False, 'order_id': '107511db-c7aa-4094-9609-95ccb1cd6b92', 'status': 'filled', 'symbol': 'SPY', 'side': 'sell', 'qty': 5.0, 'filled_avg_price': '676.5673'}
+2. valid SELL 5 SPY                -> HTTP 200 (expected 200) OK: {"result": "order submitted", "alert_id": "t2", "pipeline_signal": 1, "signal_agrees": false, "order_id": "107
+  [401] {'result': 'rejected', 'detail': 'bad or missing secret'}
+3. wrong secret                    -> HTTP 401 (expected 401) OK: {"result": "rejected", "detail": "bad or missing secret"}
+  [422] {'result': 'rejected', 'detail': 'TSLA not on the allow-list'}
+4. symbol not allowed              -> HTTP 422 (expected 422) OK: {"result": "rejected", "detail": "TSLA not on the allow-list"}
+  [422] {'result': 'rejected', 'detail': 'qty must be between 0 and 100'}
+5. qty above limit                 -> HTTP 422 (expected 422) OK: {"result": "rejected", "detail": "qty must be between 0 and 100"}
+  [400] {'result': 'rejected', 'detail': 'body is not valid JSON'}
+6. malformed message               -> HTTP 400 (expected 400) OK: {"result": "rejected", "detail": "body is not valid JSON"}
+  [200] {'result': 'duplicate ignored', 'alert_id': 't1', 'detail': 'alert already processed (TradingView retries are safe)'}
+Receiver stopped after 7 alerts. Paper equity USD 99,999.32, positions []. Audit log -> _outputs/Lab17_webhook_log.csv
+7. TradingView retry of alert 1    -> HTTP 200 (expected 200) OK: {"result": "duplicate ignored", "alert_id": "t1", "detail": "alert already processed (TradingView retries are 
+
+RESULT: 7/7 alerts handled as expected
+
+============================== stage 18 diagnose ==============================
+
+Diagnostics for ema_cross {'fast': 10, 'slow': 30} on SPY (and the Lab 18 exhibit):
+  [PASS] 1 look-ahead (features)    ema_cross              0 of 25 truncation / future-shock checks changed values up to t
+  [FAIL] 1 look-ahead (features)    exhibit                25 of 25 checks changed values up to t: rolling(center=True)
+  [PASS] 2 look-ahead (execution)   ema_cross              pipeline fills next bar; a same-bar backtest would show Sharpe 1.45 vs 0.82 (+0.63)
+  [FAIL] 2 look-ahead (execution)   exhibit                signal_t x return_t: Sharpe 4.28 as submitted -> 0.24 once fixed and filled next bar
+  [PASS] 3 cost drag                ema_cross              gross 9.13% -> net 9.02% (drag 1% of gross); break-even 135.8 bps vs assumed 1.5 bps one way
+  [WARN] 3 cost drag                exhibit (fixed)        46 position changes a year; net CAGR 1.46%
+  [WARN] 4 overfitting              ema_cross              IS Sharpe 0.86 vs best of 76 random strategies 1.42; OOS 0.75 (decay -0.11)
+  [INFO] 4 overfitting              500 random strategies  best IS 1.77 -> OOS 0.55; median OOS 0.46; IS/OOS correlation -0.05; 16% have IS Sharpe > 1
+  [WARN] 5 survivorship / hindsight universe               9 symbols chosen in 2025 from listed names; a hindsight 'AI basket' (NVDA, MSFT, AAPL) CAGR 38.84% vs SPY 14.15% - use a point-in-time universe
+
+The exhibit fixed one problem at a time:
+                                 CAGR Sharpe Max drawdown
+  0 As submitted (biased)      71.47%   4.28       -6.90%
+  1 Trailing window, same bar  66.56%   4.68       -4.92%
+  2 + next-bar execution        2.23%   0.24      -26.17%
+  3 + realistic costs           1.46%   0.18      -28.03%
+  SPY buy & hold               14.14%   0.78      -33.72%
+
+VERDICT for ema_cross: CLEAR for paper trading - review every WARN with the risk committee
+Diagnostics -> _outputs/Lab18_diagnostics.csv
+[chart] saved _outputs/Lab18_bias_comparison.png
+[chart] saved _outputs/Lab18_overfitting.png
+
+============================== stage 19 report ==============================
+
+[1] Research backtest 2018-2025, ema_cross 10/30 on SPY, net of Alpaca commission-free costs:
+                  ema_cross 10/30 (net) SPY buy & hold
+  Total return                   99.19%        187.48%
+  CAGR                            9.02%         14.15%
+  Ann. volatility                11.52%         19.45%
+  Sharpe                           0.81           0.78
+  Sortino                          1.12           1.09
+  Max drawdown                  -14.19%        -33.72%
+  Calmar                           0.64           0.42
+  Win rate                       50.00%              -
+  Profit factor                    3.54              -
+  Trades                             26              0
+  Exposure                       70.61%        100.00%
+  Alpha                           4.03%         -0.00%
+  Beta                             0.35           1.00
+  Costs: total USD 1,072 (spread 327, slippage 654, reg fees 91); cost drag 0.11% a year
+
+[2] Backtest vs forward (paper) test, 2025:
+                     Backtest 2025 Forward test 2025 (paper)
+  Total return              17.04%                    16.25%
+  Sharpe                      1.64                      1.65
+  Max drawdown              -5.14%                    -4.85%
+  Orders                         5                         5
+  Execution     model open + costs      avg slippage 1.0 bps
+  Tracking difference (forward - backtest) -0.79%; tracking error 0.48% annualised
+
+[3] Monitoring checks:
+                  check status                                       value
+   tracking vs backtest     OK                        -0.79% (limit +/-2%)
+  average fill slippage     OK                       1.0 bps (limit 5 bps)
+     drawdown stop rule     OK current -1.34%, worst -4.85% (stop at -15%)
+            kill switch     OK                                         off
+   diagnostics (Lab 18)     OK                             1 WARN, no FAIL
+[chart] saved _outputs/Lab19_tearsheet.png
+
+[4] Key insights:
+  - Over 2018-2025 the strategy returned 9.0% a year versus 14.1% for SPY, with a maximum drawdown of -14.2% versus -33.7% - it trades return for lower risk.
+  - Beta to SPY is 0.35 with 71% exposure; the CAPM alpha of +4.0% a year is an untested point estimate, not proof of skill.
+  - Costs were small for this low-turnover rule (drag 0.11% a year) - turnover, not commission, drives cost.
+  - The 2025 paper forward test tracked the backtest within 0.79% of total return; differences come from whole-share sizing, the position cap and fill slippage.
+  - Monitoring: 5 of 5 checks OK; diagnostics: 1 WARN, no FAIL.
+
+Recommendation: CONTINUE PAPER TRADING for at least another quarter. The forward test confirms the implementation matches the research, but the strategy has not beaten buy and hold on return. Before any live allocation: add a second uncorrelated signal, keep the drawdown stop rule, and obtain risk-committee sign-off. Paper results only - not investment advice.
+Report -> _outputs/Lab19_report.md | tearsheet -> _outputs/Lab19_tearsheet.png | monitoring -> _outputs/Lab19_monitoring.csv
+
+============================== stage 20 agents ==============================
+Agent brain: rule-based | hard limits: {'max_position_pct': 0.2, 'max_order_value': 25000, 'min_confidence': 0.6, 'stop_atr': 2.0, 'target_atr': 3.0} | broker offline-sim | equity USD 100,000.00
+
+[NVDA] as of 2025-12-31
+  Technical : score +0.75 | Uptrend (EMA20 > EMA50), RSI 53, MACD histogram positive
+  News      : score +0.25 | 4 headlines, average lexicon sentiment +0.25 (rules)
+  Bull case : ['Trend: EMA20 183.61 vs EMA50 183.27', 'Momentum: MACD histogram 1.227', 'News sentiment +0.25 (4 items)']
+  Bear case : []
+  Trader    : BUY 114 (confidence 0.85) - Debate balance +0.55 -> buy
+  Risk mgr  : APPROVED - resized 114 -> 107 shares (cap USD 20,000); bracket: stop 175.5 / target 201.9 (ATR 5.28)
+
+[AAPL] as of 2025-12-31
+  Technical : score +0.04 | Uptrend (EMA20 > EMA50), RSI 46, MACD histogram negative
+  News      : score +0.00 | 3 headlines, average lexicon sentiment +0.00 (rules)
+  Bull case : ['Trend: EMA20 273.23 vs EMA50 268.8']
+  Bear case : ['Momentum: MACD histogram -0.718']
+  Trader    : HOLD 0 (confidence 0.32) - Debate balance +0.02 -> hold
+  Risk mgr  : no trade - nothing to do
+
+[SPY] as of 2025-12-31
+  Technical : score +0.72 | Uptrend (EMA20 > EMA50), RSI 52, MACD histogram positive
+  News      : score -0.33 | 3 headlines, average lexicon sentiment -0.33 (rules)
+  Bull case : ['Trend: EMA20 676.79 vs EMA50 670.19', 'Momentum: MACD histogram 0.099']
+  Bear case : ['News sentiment -0.33 (3 items)']
+  Trader    : BUY 22 (confidence 0.6) - Debate balance +0.30 -> buy
+  Risk mgr  : APPROVED - bracket: stop 664.75 / target 694.45 (ATR 5.94)
+
+Propose-only run: add --execute to send the approved PAPER orders (a human must type YES).
+
+Human approval: not requested (propose-only run). Orders sent: 0. Decision trace -> _outputs/Lab20_decision_trace.json
+[chart] saved _outputs/Lab20_agent_pipeline.png

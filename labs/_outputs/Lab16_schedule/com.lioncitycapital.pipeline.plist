@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.lioncitycapital.pipeline</string>
+  <key>ProgramArguments</key>
+  <array><string>/Library/Frameworks/Python.framework/Versions/3.13/bin/python3</string><string>-m</string><string>pipeline</string><string>run</string><string>--once</string></array>
+  <key>WorkingDirectory</key><string>/Users/alfredang/Documents/Supporting Document/Tertiary Infotech/Tertiary IBF Projects/TGS-2023018794 - Machine Learning 101 for Financial Trading/_courseware-source/labs</string>
+  <key>StartCalendarInterval</key>
+  <array>
+      <dict><key>Weekday</key><integer>1</integer><key>Hour</key><integer>21</integer><key>Minute</key><integer>35</integer></dict>
+      <dict><key>Weekday</key><integer>2</integer><key>Hour</key><integer>21</integer><key>Minute</key><integer>35</integer></dict>
+      <dict><key>Weekday</key><integer>3</integer><key>Hour</key><integer>21</integer><key>Minute</key><integer>35</integer></dict>
+      <dict><key>Weekday</key><integer>4</integer><key>Hour</key><integer>21</integer><key>Minute</key><integer>35</integer></dict>
+      <dict><key>Weekday</key><integer>5</integer><key>Hour</key><integer>21</integer><key>Minute</key><integer>35</integer></dict>
+  </array>
+  <key>StandardOutPath</key><string>/Users/alfredang/Documents/Supporting Document/Tertiary Infotech/Tertiary IBF Projects/TGS-2023018794 - Machine Learning 101 for Financial Trading/_courseware-source/labs/_outputs/scheduler.log</string>
+  <key>StandardErrorPath</key><string>/Users/alfredang/Documents/Supporting Document/Tertiary Infotech/Tertiary IBF Projects/TGS-2023018794 - Machine Learning 101 for Financial Trading/_courseware-source/labs/_outputs/scheduler.log</string>
+</dict>
+</plist>

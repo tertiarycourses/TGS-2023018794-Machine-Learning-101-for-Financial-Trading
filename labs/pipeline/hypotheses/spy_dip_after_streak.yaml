@@ -1,0 +1,36 @@
+# Hypothesis card - written BEFORE looking at any result.
+# Lion City Capital (fictitious). `python -m pipeline hypothesis --card <this file>` tests it.
+id: H-001
+name: "SPY buy-the-dip after a losing streak"
+instrument: SPY
+timeframe: 1Day
+sample: {start: "2018-01-01", end: "2025-12-31"}
+rationale: >
+  Short-term overreaction: after several consecutive down closes, liquidity providers
+  and index-rebalancing flows tend to push the index back up the next day.
+h1: "Mean next-day return after >= 3 consecutive down closes is HIGHER than on all other days"
+h0: "Mean next-day return after >= 3 consecutive down closes EQUALS the mean on all other days"
+signal:                       # must be known at the CLOSE of the signal day
+  type: losing_streak         # losing_streak | rsi_below | close_below_sma
+  n: 3
+outcome:
+  type: forward_return        # close[t + horizon] / close[t] - 1
+  horizon_days: 1
+test:
+  method: welch_t             # Welch t-test, signal days vs other days
+  bootstrap: 5000             # bootstrap draws for the CI of the signal-day mean
+  seed: 42
+decision_rule:
+  alpha: 0.05                 # reject H0 only if p < alpha ...
+  require_positive_effect: true
+  min_edge_bps: 3             # ... AND the edge beats an estimated round-trip cost of 3 bps
+robustness:
+  streaks: [2, 3, 4]
+  symbols: [QQQ]
+biases_to_watch: [look-ahead, small sample, regime dependence, data snooping, survivorship]
+big_data_use_case:
+  data: "1-minute bars for all S&P 500 members plus news-sentiment scores"
+  source: "Alpaca Market Data + Alpaca News API"
+  tooling: "partitioned Parquet store, pandas / DuckDB, scheduled ingest stage"
+  governance: "vendor licence, point-in-time constituents, PII-free text, audit log of every pull"
+  success_measure: "effect persists across members and out of sample after costs"

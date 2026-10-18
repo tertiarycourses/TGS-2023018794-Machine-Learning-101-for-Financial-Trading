@@ -1,0 +1,1 @@
+schtasks /Create /TN "LCC Pipeline" /SC WEEKLY /D MON,TUE,WED,THU,FRI /ST 21:35 /TR "cmd /c cd /d \"/Users/alfredang/Documents/Supporting Document/Tertiary Infotech/Tertiary IBF Projects/TGS-2023018794 - Machine Learning 101 for Financial Trading/_courseware-source/labs\" && python -m pipeline run --once >> _outputs\scheduler.log 2>&1"

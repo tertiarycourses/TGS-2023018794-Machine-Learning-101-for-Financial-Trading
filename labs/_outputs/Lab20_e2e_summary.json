@@ -1,0 +1,158 @@
+{
+  "run_time": "2026-10-18T21:11:53",
+  "mode": "offline",
+  "strategy": {
+    "name": "ema_cross",
+    "symbol": "SPY",
+    "params": {
+      "fast": 10,
+      "slow": 30
+    },
+    "execution": "next_open"
+  },
+  "gates_ok": true,
+  "errors": 0,
+  "seconds": 7.9,
+  "stages": [
+    {
+      "lab": 1,
+      "stage": "check",
+      "status": "OK",
+      "seconds": 0.0,
+      "result": "offline-sim, equity USD 100,000, session closed"
+    },
+    {
+      "lab": 2,
+      "stage": "validate",
+      "status": "OK",
+      "seconds": 0.1,
+      "result": "2/2 watch-list symbols match TradingView"
+    },
+    {
+      "lab": 3,
+      "stage": "ingest",
+      "status": "OK",
+      "seconds": 0.6,
+      "result": "37 files cached, 0 quality FAIL, 12 headlines"
+    },
+    {
+      "lab": 4,
+      "stage": "hypothesis",
+      "status": "OK",
+      "seconds": 0.3,
+      "result": "178 signal days, t 2.03, p 0.044 -> SUPPORTED"
+    },
+    {
+      "lab": 5,
+      "stage": "indicators",
+      "status": "OK",
+      "seconds": 0.1,
+      "result": "2 bull / 2 bear EMA crosses since 2024-06"
+    },
+    {
+      "lab": 6,
+      "stage": "reconcile",
+      "status": "OK",
+      "seconds": 0.1,
+      "result": "Pine settings reconciled; net profit USD 79,878"
+    },
+    {
+      "lab": 7,
+      "stage": "signals",
+      "status": "OK",
+      "seconds": 0.6,
+      "result": "7/9 universe targets long, look-ahead tests pass"
+    },
+    {
+      "lab": 8,
+      "stage": "execute",
+      "status": "OK",
+      "seconds": 0.0,
+      "result": "equal-weight targets -> 7 paper orders (7 filled, 0 queued), idempotent re-run sent 0, session regular"
+    },
+    {
+      "lab": 9,
+      "stage": "evaluate",
+      "status": "OK",
+      "seconds": 0.2,
+      "result": "best Sharpe: ema_cross"
+    },
+    {
+      "lab": 10,
+      "stage": "search",
+      "status": "OK",
+      "seconds": 0.7,
+      "result": "76 sets, IS/OOS rank corr 0.06, top-5 decay -0.62"
+    },
+    {
+      "lab": 11,
+      "stage": "ml",
+      "status": "OK",
+      "seconds": 2.1,
+      "result": "AUC {'Logistic regression': 0.481, 'Random forest': 0.483, 'XGBoost': 0.497} -> NO EDGE"
+    },
+    {
+      "lab": 12,
+      "stage": "regime",
+      "status": "OK",
+      "seconds": 0.4,
+      "result": "PC1 56.8%, latest regime Low vol"
+    },
+    {
+      "lab": 13,
+      "stage": "abtest",
+      "status": "OK",
+      "seconds": 0.3,
+      "result": "DO NOT REJECT H0"
+    },
+    {
+      "lab": 14,
+      "stage": "pairs",
+      "status": "OK",
+      "seconds": 0.3,
+      "result": "KO/PEP beta 0.756, net -10.6%, beta to SPY +0.02"
+    },
+    {
+      "lab": 15,
+      "stage": "backtest",
+      "status": "OK",
+      "seconds": 0.4,
+      "result": "break-even bps {'dip_buy': 19.5, 'trend_filter': 142.3}"
+    },
+    {
+      "lab": 16,
+      "stage": "run",
+      "status": "OK",
+      "seconds": 0.3,
+      "result": "forward test 250 sessions, 5 orders, +16.25% vs buy & hold +17.06%"
+    },
+    {
+      "lab": 17,
+      "stage": "webhook",
+      "status": "OK",
+      "seconds": 0.0,
+      "result": "7/7 simulated alerts handled as expected"
+    },
+    {
+      "lab": 18,
+      "stage": "diagnose",
+      "status": "OK",
+      "seconds": 0.6,
+      "result": "CLEAR for paper trading"
+    },
+    {
+      "lab": 19,
+      "stage": "report",
+      "status": "OK",
+      "seconds": 0.6,
+      "result": "forward +16.25% vs backtest +17.04%, 5/5 monitoring OK"
+    },
+    {
+      "lab": 20,
+      "stage": "agents",
+      "status": "OK",
+      "seconds": 0.1,
+      "result": "rule-based; NVDA APPROVED, AAPL no trade, SPY APPROVED; approval not requested (propose-only run), 0 paper orders"
+    }
+  ]
+}

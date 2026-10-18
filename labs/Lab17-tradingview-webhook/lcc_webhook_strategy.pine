@@ -1,0 +1,30 @@
+//@version=6
+// Lab 17 - Lion City Capital (fictitious, for training)
+// The pipeline's configured strategy (EMA 10/30 crossover, long only) as a Pine strategy whose
+// order fills trigger a webhook alert. Each order uses a FIXED share quantity so it stays inside
+// the receiver's max_order_qty limit (100). Create ONE alert on this strategy:
+//   Condition: LCC Webhook EMA -> "Order fills only", Webhook URL = https://<your-tunnel>/webhook,
+//   Message  = the contents of tradingview_alert_message.json (with your WEBHOOK_SECRET).
+// The receiver checks the secret, allow-list, qty and duplicate alert id, asks the pipeline's own
+// signal, runs the risk checks and sends a PAPER order. Educational use only.
+strategy("LCC Webhook EMA", shorttitle = "LCC WH", overlay = true,
+     initial_capital = 100000, currency = currency.USD,
+     default_qty_type = strategy.fixed, default_qty_value = 5,
+     commission_type = strategy.commission.cash_per_order, commission_value = 1.0,
+     slippage = 2, pyramiding = 0, process_orders_on_close = false)
+
+fastLen = input.int(10, "Fast EMA length", minval = 1)
+slowLen = input.int(30, "Slow EMA length", minval = 2)
+shares  = input.int(5, "Shares per order (receiver limit is 100)", minval = 1, maxval = 100)
+
+fastMA = ta.ema(close, fastLen)
+slowMA = ta.ema(close, slowLen)
+
+if ta.crossover(fastMA, slowMA)
+    strategy.entry("Long", strategy.long, qty = shares, comment = "EMA bull cross")
+if ta.crossunder(fastMA, slowMA)
+    strategy.close("Long", comment = "EMA bear cross")
+
+plot(fastMA, "Fast EMA", color = color.blue, linewidth = 2)
+plot(slowMA, "Slow EMA", color = color.orange, linewidth = 2)
+bgcolor(strategy.position_size > 0 ? color.new(color.green, 92) : na, title = "In position")

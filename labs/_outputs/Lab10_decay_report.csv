@@ -1,0 +1,4 @@
+family,p_fast,p_slow,IS_sharpe,IS_cagr,OOS_sharpe,OOS_cagr,trades,p_n,p_entry,p_exit,p_window,p_k,IS_rank,OOS_rank,decay
+bollinger_breakout,,,0.9121,0.091,1.0406,0.0986,58,,,,20.0,1.0,10,3,0.1285
+rsi_reversion,,,0.6024,0.0907,0.7373,0.0905,179,2.0,30.0,70.0,,,21,22,0.1349
+sma_cross,10.0,100.0,1.2304,0.1592,0.7044,0.0745,12,,,,,,1,26,-0.526

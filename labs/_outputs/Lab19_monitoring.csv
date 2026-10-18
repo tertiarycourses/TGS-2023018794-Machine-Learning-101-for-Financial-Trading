@@ -1,0 +1,6 @@
+check,status,value
+tracking vs backtest,OK,-0.79% (limit +/-2%)
+average fill slippage,OK,1.0 bps (limit 5 bps)
+drawdown stop rule,OK,"current -1.34%, worst -4.85% (stop at -15%)"
+kill switch,OK,off
+diagnostics (Lab 18),OK,"1 WARN, no FAIL"
