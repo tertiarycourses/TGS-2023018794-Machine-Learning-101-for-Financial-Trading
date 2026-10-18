@@ -58,7 +58,7 @@ Each lab adds one stage to a single algorithmic-trading pipeline. Every lab fold
 
 ## Course software
 
-The labs are designed to run in the course's trading simulator, [alfredang/algorithmic-trader-bot](https://github.com/alfredang/algorithmic-trader-bot) - a local web app (uv or Docker Compose) for data, strategies, backtesting, paper trading, analytics and multi-agent AI. Download and installation steps are in the Learner Guide (Platform Guides) and the Lab 1 manual.
+The labs are designed to run in the course's trading simulator, [alfredang/algorithmic-trader-bot](https://github.com/alfredang/algorithmic-trader-bot) - a local web app (uv or Docker Compose) for data, strategies, backtesting, paper trading, analytics and multi-agent AI. Download and installation steps are in the Learner Guide (Platform Guides) and the Lab 1 manual. Every lab has two parts: **Part A** in the simulator (its Course Labs page opens each step pre-filled), then **Part B**, the same pipeline stage in code built with an AI coding assistant from the prompts in the lab's instruction PDF.
 
 ## Public package
 

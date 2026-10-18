@@ -149,6 +149,54 @@ FSE-DAT-3019-1.1 Data Analytics and Computational Modelling (Proficiency Level 3
 
 Create the pipeline package and its config.yaml (universe, strategy parameters, risk limits, costs, secret names), build a validating configuration loader and a market-clock module, and run `python -m pipeline check` against the Alpaca paper account or the offline simulator.
 
+#### Part A - In the Trading Simulator
+
+**A1. Load the demo data**
+
+Open Settings and press 'Load / refresh demo data' (or run `uv run trader seed`). This caches 12 symbols of daily bars 2018-2025, SPY hourly bars, sample headlines, two custom strategies and sample backtests.
+
+Open: <http://localhost:8000/#/settings> (Settings > Demo data)
+
+*Check:* Settings shows about 29,000 bars and at least 8 backtests.
+
+**A2. Check the integrations**
+
+Open Integrations. Without keys, Alpaca shows 'not configured' and the app uses the simulator broker and the offline data. To connect Alpaca paper: alpaca.markets > Paper Trading > API Keys > Generate, copy APCA_API_KEY_ID and APCA_API_SECRET_KEY into .env, restart, then press Test connection.
+
+Open: <http://localhost:8000/#/integrations> (Integrations)
+
+*Check:* Alpaca test says 'Paper account ACTIVE' (online) - or you understand the app runs fully offline.
+
+**A3. Check the AI agent login**
+
+On the Integrations page read the OpenAI Codex card (Sign in with ChatGPT - run `codex login` on your own machine) and the Claude card (API key only - Anthropic's terms do not allow third-party apps to use Claude.ai subscription login). Read both 'Provider terms' panels.
+
+Open: <http://localhost:8000/#/integrations> (Integrations > AI providers)
+
+*Check:* You can say which brain the desk will use: codex, claude, openai or the rule-based fallback.
+
+**A4. Read the market clock**
+
+Look at the US session badge in the top bar. Singapore is 12-13 hours ahead of New York, so a 09:00-18:30 SGT class sits in the US overnight and pre-market sessions.
+
+Open: <http://localhost:8000/#/trading> (Paper Trading > clock)
+
+*Check:* You can explain why orders placed during class become extended-hours LIMIT orders.
+
+**A5. Tour the Pipeline Map**
+
+Open the Pipeline Map and hover each of the 14 stages. Click 'Data ingestion' to see its recent activity.
+
+Open: <http://localhost:8000/#/pipeline> (Pipeline Map)
+
+```bash
+uv run trader status   # prints the configuration and which AI providers are available
+```
+
+*Check:* Data ingestion and Backtesting are green; you can name the stage that enforces the kill switch.
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Set up Python and your AI coding assistant (K5)**
 
 Open a terminal in the labs folder. Run: python3 -m venv .venv, then source .venv/bin/activate (Windows: .venv\Scripts\activate), then pip install -r requirements.txt. Open the labs folder in VS Code with Claude Code (or your AI coding assistant). Working rule for the whole course: the assistant writes code, YOU review it and run it; never paste an API key into the assistant.
@@ -226,6 +274,42 @@ Explain to me, as a finance professional new to coding, why labs/pipeline/config
 
 Read daily bars for SGX:D05 and NASDAQ:AAPL from the TradingView Data Window, record them, and build a validation stage that compares TradingView with the pipeline's raw and dividend-adjusted bars and writes a validation report.
 
+#### Part A - In the Trading Simulator
+
+**A1. Read TradingView's Data Window**
+
+In TradingView open NASDAQ:AAPL, daily timeframe, hover the bar of 2025-12-31 and read open/high/low/close in the Data Window (default settings: dividends NOT adjusted).
+
+Open: <http://localhost:8000/#/data?tab=reference&ref=AAPL> (Data > Validate vs TradingView (AAPL))
+
+*Check:* You have four numbers from TradingView.
+
+**A2. Compare with RAW and ADJUSTED bars**
+
+Type your TradingView values into the 'Your TradingView reading' row. The app shows the difference against RAW (split-adjusted only) and ADJUSTED (split + dividend) bars.
+
+Open: <http://localhost:8000/#/data?tab=reference&ref=AAPL> (Data > Validate vs TradingView)
+
+*Check:* Verdict 'PASS - TradingView matches RAW' (to within 0.1%).
+
+**A3. Repeat for SGX:D05 (DBS)**
+
+Select SGX:D05. DBS pays large dividends, so the adjustment factor is far from 1.
+
+Open: <http://localhost:8000/#/data?tab=reference&ref=D05.SI> (Data > Validate vs TradingView (D05))
+
+*Check:* You can explain why the ADJUSTED close is lower than the RAW close and why a model trained on adjusted prices must never be fed raw live prices.
+
+**A4. Inspect the chart**
+
+Open the AAPL chart and compare its shape with TradingView.
+
+Open: <http://localhost:8000/#/data?tab=chart&symbol=AAPL> (Data > Chart AAPL)
+
+*Check:* The candles match TradingView's daily chart (allowing for the adjustment).
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Add the data-check panel to SGX:D05 (A3, K9)**
 
 Log in to tradingview.com and open a chart of SGX:D05, timeframe 1D, chart type Candles. Open the Pine Editor, paste the contents of Lab02-tradingview-charts/lcc_data_check.pine, Save it as 'LCC Data Check' and click Add to chart. In its Settings set 'Bar to validate' to 31 December 2025. Open the Data Window (right toolbar) and hover over that bar.
@@ -294,6 +378,42 @@ On TradingView open the News, Financials and economic calendar views for SGX:D05
 *A6, K9 | 20 min | stage: Ingestion | folder: [`labs/Lab03-alpaca-market-data/`](../labs/Lab03-alpaca-market-data/)*
 
 Build `python -m pipeline ingest` to fetch and cache daily, weekly, monthly and hourly bars for the universe, run automated data-quality checks, ingest headlines as unstructured data, and describe the forms of data and the 3 Vs of big data.
+
+#### Part A - In the Trading Simulator
+
+**A1. Fetch data**
+
+Data > Instruments & ingestion: fetch AAPL with source 'auto' (Alpaca if keys, else the demo file). Online, try 'yfinance' or 'Twelve Data' too (Twelve Data needs TWELVEDATA_API_KEY).
+
+Open: <http://localhost:8000/#/data?tab=instruments&symbol=AAPL> (Data > Fetch AAPL)
+
+*Check:* A toast reports the number of bars, the source and the quality status.
+
+**A2. Read the data-quality report**
+
+Open Data quality for SPY. Look at missing values, duplicate timestamps, gaps over 4 days and big moves (possible unadjusted splits).
+
+Open: <http://localhost:8000/#/data?tab=quality&symbol=SPY> (Data > Quality SPY)
+
+*Check:* Status OK or CHECK; the big-move dates include March 2020.
+
+**A3. Switch timeframes**
+
+On the chart, switch SPY between 1Day, 1Week, 1Month and 1Hour.
+
+Open: <http://localhost:8000/#/data?tab=chart&symbol=SPY&timeframe=1Week> (Data > Chart SPY weekly)
+
+*Check:* Weekly and monthly bars are resampled from daily bars; hourly bars are US/Eastern.
+
+**A4. Headlines and sentiment**
+
+Data > News & sentiment for NVDA: press 'Fetch & score headlines'. Online with NEWSAPI_KEY it calls NewsAPI.org; otherwise Alpaca News or the synthetic sample headlines. Try the sentiment box with your own sentence.
+
+Open: <http://localhost:8000/#/data?tab=news&symbol=NVDA> (Data > News NVDA)
+
+*Check:* Each headline has a VADER score between -1 and +1; the daily sentiment chart appears.
+
+#### Part B - In Code with Your AI Assistant
 
 **Step 1: Understand how bars are requested (K9)**
 
@@ -375,6 +495,39 @@ Using the DATA_FORMS table in labs/pipeline/ingest.py, propose how to add Alpaca
 *A1, A6, K1 | 15 min | stage: Hypothesis | folder: [`labs/Lab04-trading-hypothesis/`](../labs/Lab04-trading-hypothesis/)*
 
 Write a falsifiable hypothesis card in YAML (H1, H0, signal known at the close, outcome, test, decision rule, big-data use case) and build `python -m pipeline hypothesis` to test it with a Welch t-test, a bootstrap confidence interval and a robustness grid.
+
+#### Part A - In the Trading Simulator
+
+**A1. Write the hypothesis card**
+
+Research > Hypothesis test. Keep signal 'losing streak' n = 3, horizon 1 day, alpha 0.05, min edge 3 bps. Read the H1 and H0 text.
+
+Open: <http://localhost:8000/#/research/hypothesis> (Research > Hypothesis (SPY, losing streak 3))
+
+*Check:* H0 and H1 are written before you press Run.
+
+**A2. Run the test**
+
+Press 'Run the test'.
+
+Open: <http://localhost:8000/#/research/hypothesis>
+
+*Check:* You can read the signal-day mean, the other-day mean, Welch t and p, and the 95% bootstrap CI.
+
+**A3. Robustness and multiple testing**
+
+Read the robustness grid (other streak lengths and QQQ) and the Bonferroni alpha.
+
+Open: <http://localhost:8000/#/research/hypothesis>
+
+```bash
+from trader.core.stats import hypothesis_test
+# hypothesis_test(bars, {'type': 'losing_streak', 'n': 3}, horizon=1)
+```
+
+*Check:* You can explain why trying many variants inflates false positives.
+
+#### Part B - In Code with Your AI Assistant
 
 **Step 1: Read the hypothesis card (A1, K1)**
 
@@ -581,6 +734,34 @@ Review my hypothesis result in labs/_outputs/Lab04_hypothesis_result.yaml. In pl
 
 Add the desk's Pine Script v6 indicators to a TradingView chart, build pipeline/indicators.py with twins of ta.ema, ta.sma, ta.rsi, ta.bb, ta.atr, ta.macd, ta.crossover and ta.crossunder, and cross-check the values against the TradingView Data Window.
 
+#### Part A - In the Trading Simulator
+
+**A1. Overlay trend indicators**
+
+Data > Chart for SPY: toggle sma:50, sma:200, ema:20 and bollinger.
+
+Open: <http://localhost:8000/#/data?tab=chart&symbol=SPY&overlays=sma:50,sma:200,bollinger> (Data > Chart SPY with SMA 50/200 and Bollinger)
+
+*Check:* Lines draw over the candles (TradingView Lightweight Charts).
+
+**A2. Oscillators**
+
+Switch the lower pane between RSI(14) and MACD.
+
+Open: <http://localhost:8000/#/data?tab=chart&symbol=SPY&osc=macd> (Data > Chart SPY MACD)
+
+*Check:* RSI has 30/70 guide lines; the MACD histogram changes colour above and below 0.
+
+**A3. Export Pine Script v6**
+
+Strategy Library > EMA crossover > Pine Script v6 > Copy. In TradingView open the Pine Editor, paste, 'Add to chart'.
+
+Open: <http://localhost:8000/#/strategies?key=ema_cross> (Strategies > EMA crossover)
+
+*Check:* TradingView shows the two EMAs; their last values match the app's chart.
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Add the trend and bands indicator (A3, K3)**
 
 On TradingView open NASDAQ:AAPL, 1D. Open the Pine Editor, create a new indicator, replace the template with Lab05-pine-indicators/lcc_trend_bands.pine (it starts with //@version=6), Save as 'LCC Trend' and Add to chart.
@@ -653,6 +834,34 @@ Restore EMA 20/50. Click Alert, choose Condition: LCC Trend > 'EMA bullish cross
 *A2, A3, K3, K7 | 30 min | stage: Strategy prototype | folder: [`labs/Lab06-pine-strategy-tester/`](../labs/Lab06-pine-strategy-tester/)*
 
 Configure a Pine Script v6 strategy with costs, read the Strategy Tester, build `python -m pipeline reconcile` to check the Pine settings and reproduce the results, and place and manage paper trades from the chart with TradingView Paper Trading (and optionally an Alpaca paper account).
+
+#### Part A - In the Trading Simulator
+
+**A1. Backtest the SMA 50/200 crossover in the app**
+
+Run the preset backtest: SMA crossover 50/200 on SPY, Alpaca-style costs, next-bar-open fills.
+
+Open: <http://localhost:8000/#/backtest?strategy=sma_cross&symbols=SPY&fast=50&slow=200&costs=alpaca_retail> (Backtest SPY SMA 50/200, Alpaca costs)
+
+*Check:* About 5 round trips 2018-2025; note the net CAGR and Sharpe.
+
+**A2. Run it in TradingView**
+
+Export the SMA crossover Pine Script and add it to an AMEX:SPY daily chart. Open the Strategy Tester.
+
+Open: <http://localhost:8000/#/strategies?key=sma_cross> (Strategies > SMA crossover > Pine)
+
+*Check:* The Strategy Tester list of trades has the same entry dates (TradingView also fills on the next bar's open).
+
+**A3. Reconcile and paper trade on TradingView**
+
+Explain any differences (adjusted vs raw data, commission per order, slippage ticks). Optionally connect TradingView Paper Trading and place one order from the chart.
+
+Open: <http://localhost:8000/#/backtest?strategy=sma_cross&symbols=SPY&fast=50&slow=200&costs=alpaca_retail>
+
+*Check:* You can list at least two reasons the two backtests differ.
+
+#### Part B - In Code with Your AI Assistant
 
 **Step 1: Read the strategy code (A2, K3)**
 
@@ -739,6 +948,42 @@ Apply the strategy to SGX:D05 and compare. Decide whether SMA 50/200 should repl
 
 Build pipeline/signals.py with trend, mean-reversion, momentum and breakout signals that return target positions with next-bar alignment, a registry, an automated look-ahead test and a universe target file for the execution stage.
 
+#### Part A - In the Trading Simulator
+
+**A1. Trend: EMA 20/50 on SPY**
+
+Run the preset.
+
+Open: <http://localhost:8000/#/backtest?strategy=ema_cross&symbols=SPY&fast=20&slow=50&costs=alpaca_retail> (Backtest SPY EMA 20/50, Alpaca costs)
+
+*Check:* Note Sharpe and max drawdown vs buy-and-hold.
+
+**A2. Mean reversion: Bollinger on KO**
+
+Run Bollinger mean reversion on KO; then change k from 2.0 to 1.5.
+
+Open: <http://localhost:8000/#/backtest?strategy=bollinger_reversion&symbols=KO&window=20&k=2> (Backtest KO Bollinger 20/2)
+
+*Check:* Win rate is high, but losses are larger than wins - 'many small wins, rare big losses'.
+
+**A3. Momentum and breakout**
+
+Run time-series momentum (126 bars) on QQQ and the Donchian 20/10 breakout on QQQ.
+
+Open: <http://localhost:8000/#/backtest?strategy=donchian_breakout&symbols=QQQ&entry=20&exit=10> (Backtest QQQ Donchian 20/10)
+
+*Check:* Open the 'Price & trades' tab: buy arrows follow 20-day highs.
+
+**A4. Read each strategy's explanation**
+
+Strategy Library: open each card and read How it works / Rule / Works best when / Watch out for.
+
+Open: <http://localhost:8000/#/strategies>
+
+*Check:* You can say which family suits a trending market and which a range-bound one.
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Agree the signal contract (A2)**
 
 Read the docstring of the reference Lab07-python-indicators/solution/signals.py. Every signal returns a float Series of target positions (1 = long, 0 = flat) decided with information up to the CLOSE of bar t; the position is HELD from bar t+1. Warm-up bars (NaN indicators) are flat.
@@ -815,6 +1060,46 @@ Using the signal table from python -m pipeline signals, estimate for each signal
 *A3, K5 | 30 min | stage: Execution | folder: [`labs/Lab08-paper-orders/`](../labs/Lab08-paper-orders/)*
 
 Build pipeline/execution.py: a session-aware, idempotent order manager that sizes orders from target weights, sends market, extended-hours limit, GTC-queued or bracket PAPER orders, polls their lifecycle, cancels protective legs before exits, and falls back safely when an order is rejected.
+
+#### Part A - In the Trading Simulator
+
+**A1. Market order in the regular session**
+
+Paper Trading > Order ticket: BUY 10 SPY, type market, Session (sim) = regular. Send.
+
+Open: <http://localhost:8000/#/trading?tab=ticket> (Paper Trading > Order ticket)
+
+*Check:* Result ACCEPTED and status filled; every risk check is listed.
+
+**A2. Extended-hours limit order (Singapore class hours)**
+
+Same ticket, type auto, Session (sim) = overnight. The app converts it to a LIMIT order, time in force DAY, extended_hours=True, priced off the quote ± 25 bps.
+
+Open: <http://localhost:8000/#/trading?tab=ticket>
+
+*Check:* The order shows 'limit day ext-hrs'. A market order in the overnight session is blocked.
+
+**A3. Bracket order**
+
+BUY 5 SPY, regular session, with a take-profit and stop-loss price. Then open the Orders tab and expand the status to see the lifecycle and the two exit legs (held until the parent fills, then one-cancels-other).
+
+Open: <http://localhost:8000/#/trading?tab=orders>
+
+*Check:* Two legs appear: a limit (take-profit) and a stop (stop-loss).
+
+**A4. Queue while closed and cancel**
+
+Session = closed: the order becomes a GTC limit that queues for the next session. Cancel it from the Orders tab.
+
+Open: <http://localhost:8000/#/trading?tab=orders>
+
+```bash
+With Alpaca keys: TradingClient(api_key, secret_key, paper=True).submit_order(LimitOrderRequest(symbol='SPY', qty=1, side=OrderSide.BUY, time_in_force=TimeInForce.DAY, limit_price=..., extended_hours=True))
+```
+
+*Check:* Status moves accepted -> canceled.
+
+#### Part B - In Code with Your AI Assistant
 
 **Step 1: Learn the order rules for each session (K5)**
 
@@ -900,6 +1185,34 @@ Run: python -m pipeline execute --live-paper --flatten, then refresh the dashboa
 *A3, K3 | 25 min | stage: Evaluation | folder: [`labs/Lab09-performance-metrics/`](../labs/Lab09-performance-metrics/)*
 
 Build `python -m pipeline evaluate` to compute total return, CAGR, volatility, Sharpe, Sortino, maximum drawdown, Calmar, win rate, profit factor, exposure, turnover, alpha and beta for every signal against a buy-and-hold benchmark, and interpret the ranking.
+
+#### Part A - In the Trading Simulator
+
+**A1. Open the analytics**
+
+Analytics: choose the EMA 10/30 seeded backtest. Hover every metric for its formula.
+
+Open: <http://localhost:8000/#/analytics> (Analytics)
+
+*Check:* You can define Sharpe, Sortino, Calmar, max drawdown, profit factor, expectancy, exposure and turnover.
+
+**A2. Compare with buy-and-hold**
+
+Tick the EMA backtest and 'Buy and hold SPY' and press Compare.
+
+Open: <http://localhost:8000/#/analytics>
+
+*Check:* Buy-and-hold has higher CAGR but a deeper drawdown; the strategy has lower exposure.
+
+**A3. Glossary**
+
+Open Help & Glossary > Metric glossary.
+
+Open: <http://localhost:8000/#/help?tab=glossary>
+
+*Check:* Each formula matches the course slides.
+
+#### Part B - In Code with Your AI Assistant
 
 **Step 1: Read the metric formulas (K3)**
 
@@ -1085,6 +1398,34 @@ In labs/pipeline/evaluate.py add an 'Ulcer index' column = sqrt(mean(drawdown% s
 
 Build `python -m pipeline search` to grid-search three signal families, rank parameter sets in sample, measure out-of-sample decay, prefer a robust parameter region, and decide whether anything deserves promotion into config.yaml.
 
+#### Part A - In the Trading Simulator
+
+**A1. Run the grid**
+
+Research > Strategy search: SMA crossover on SPY, in-sample to 2021-12-31, Alpaca costs. Press Search.
+
+Open: <http://localhost:8000/#/research/grid?strategy=sma_cross&symbol=SPY> (Research > Grid SPY SMA cross)
+
+*Check:* About 24 parameter sets; two heatmaps appear.
+
+**A2. Read the decay**
+
+Compare the in-sample and out-of-sample heatmaps and the IS->OOS rank correlation.
+
+Open: <http://localhost:8000/#/research/grid>
+
+*Check:* You can explain why the single best in-sample cell is usually not the best out of sample, and why a robust region is preferred.
+
+**A3. Walk-forward**
+
+Research > Walk-forward: SMA crossover on SPY (3-year train, 1-year test).
+
+Open: <http://localhost:8000/#/research/walkforward?strategy=sma_cross> (Research > Walk-forward SPY)
+
+*Check:* The stitched out-of-sample equity curve and the parameters chosen in each window.
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Define the search space (A2, K2)**
 
 Read GRIDS in Lab10-strategy-grid-search/solution/search.py: sma_cross fast x slow (24 valid pairs), rsi_reversion n x entry x exit (36), bollinger_breakout window x k (16) - 76 sets.
@@ -1147,6 +1488,39 @@ Using labs/_outputs/Lab10_decay_report.csv and labs/_outputs/Lab10_grid_results.
 *A4, K4, K6 | 20 min | stage: ML signal | folder: [`labs/Lab11-ml-signal-classifier/`](../labs/Lab11-ml-signal-classifier/)*
 
 Build pipeline/ml.py: engineer causal features, train logistic regression, random forest and XGBoost with walk-forward TimeSeriesSplit validation, turn P(up) into a target position and backtest it after costs.
+
+#### Part A - In the Trading Simulator
+
+**A1. Train the classifiers**
+
+Research > ML models on SPY, threshold 0.55.
+
+Open: <http://localhost:8000/#/research/ml> (Research > ML SPY)
+
+*Check:* AUC close to 0.5 - daily direction is close to a coin toss; read the verdict.
+
+**A2. Backtest an ML strategy**
+
+Backtest 'ML: XGBoost (walk-forward)' on SPY.
+
+Open: <http://localhost:8000/#/backtest?strategy=ml_xgboost&symbols=SPY> (Backtest SPY XGBoost)
+
+*Check:* Judge the model by the net-of-cost strategy, not by accuracy.
+
+**A3. Check for leakage**
+
+Research > Diagnostics on 'ML: logistic regression'.
+
+Open: <http://localhost:8000/#/research/diagnostics?strategy=ml_logistic>
+
+```bash
+from trader.core.ml import walk_forward_proba
+# proba, folds = walk_forward_proba(bars, 'xgboost', min_train=504, retrain_every=126)
+```
+
+*Check:* Look-ahead check PASS: refits use only past bars.
+
+#### Part B - In Code with Your AI Assistant
 
 **Step 1: Build causal features and the label (K4)**
 
@@ -1221,6 +1595,26 @@ Open _outputs/Lab11_ml_strategy.png. Which features does XGBoost rely on, and do
 
 Build pipeline/regime.py: PCA on the universe's returns, K-means regimes on backward-looking SPY features, walk-forward regime labels, and a gate that forces signals flat in the stress regime, evaluated after costs.
 
+#### Part A - In the Trading Simulator
+
+**A1. Analyse regimes**
+
+Research > Regimes: SPY, 3 clusters, gate the EMA crossover.
+
+Open: <http://localhost:8000/#/research/regime> (Research > Regimes SPY)
+
+*Check:* PC1 explains the largest share of variance (the market factor); the 2020 crash is in the stress regime.
+
+**A2. Backtest the regime-filtered strategy**
+
+Backtest 'Regime-filtered strategy (K-means gate)'.
+
+Open: <http://localhost:8000/#/backtest?strategy=regime_filtered&symbols=SPY> (Backtest SPY regime filter)
+
+*Check:* Compare max drawdown with the ungated EMA crossover.
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Build PCA and the regime features (K4)**
 
 Ask your assistant for the first part of pipeline/regime.py.
@@ -1284,6 +1678,26 @@ Run: python -m pipeline regime --clusters 4 and compare the profiles.
 
 Build `python -m pipeline abtest` to compare any two library signals with a Welch t-test, a paired t-test and a block-bootstrap confidence interval for the Sharpe difference, and to record an accept or reject decision with a multiple-testing caution.
 
+#### Part A - In the Trading Simulator
+
+**A1. Run the A/B test**
+
+Research > A/B test: A = Trend filter, B = Dip buy, SPY, alpha 0.05, 20 variants tried.
+
+Open: <http://localhost:8000/#/research/abtest?a=trend_filter&b=dip_buy> (Research > A/B trend_filter vs dip_buy)
+
+*Check:* Read the decision; if the CI contains 0, do not reject H0.
+
+**A2. Your own variants**
+
+A = EMA crossover {"fast": 10, "slow": 30}, B = EMA crossover {"fast": 20, "slow": 50}.
+
+Open: <http://localhost:8000/#/research/abtest?a=ema_cross&b=ema_cross>
+
+*Check:* You can explain the Bonferroni-adjusted alpha.
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: State the hypotheses (A5, K2)**
 
 Write H0: both variants have the same expected daily return and Sharpe; H1: they differ. Choose alpha = 0.05 and note how many variants the desk has tried this quarter (default 20).
@@ -1346,6 +1760,26 @@ Run: python -m pipeline abtest --a ema_cross --b trend_filter.
 *A4, K6 | 20 min | stage: Pairs / stat-arb | folder: [`labs/Lab14-pairs-trading/`](../labs/Lab14-pairs-trading/)*
 
 Build pipeline/pairs.py: screen pairs with the Engle-Granger cointegration test, estimate the hedge ratio, trade the spread z-score out of sample with next-bar execution and costs on both legs, confirm market neutrality and output leg targets.
+
+#### Part A - In the Trading Simulator
+
+**A1. Screen the pairs**
+
+Research > Pairs screen (formation to 2022-12-31).
+
+Open: <http://localhost:8000/#/research/pairs> (Research > Pairs screen)
+
+*Check:* High correlation does not imply cointegration - compare the corr and ADF columns.
+
+**A2. Backtest KO/PEP**
+
+Backtest the pairs strategy on KO, PEP (both legs, short leg allowed, borrow cost charged).
+
+Open: <http://localhost:8000/#/backtest?strategy=pairs_cointegration&symbols=KO,PEP> (Backtest KO/PEP pairs)
+
+*Check:* Beta to SPY near 0 in 'All metrics'; the trade list has long and short legs.
+
+#### Part B - In Code with Your AI Assistant
 
 **Step 1: Read the method (K6)**
 
@@ -1465,6 +1899,34 @@ Looking at labs/_outputs/Lab14_pairs_trading.png and the stage output, explain t
 
 Build pipeline/backtest.py around the common backtester: run any library signal under every cost scenario (and a custom one), break the cost into commission, spread, slippage and regulatory fees, find each strategy's break-even cost and test next-open versus next-close execution.
 
+#### Part A - In the Trading Simulator
+
+**A1. Zero vs Alpaca vs high-cost**
+
+Backtest Dip buy on SPY three times with cost model zero, alpaca_retail and high_cost.
+
+Open: <http://localhost:8000/#/backtest?strategy=dip_buy&symbols=SPY&costs=high_cost> (Backtest SPY dip-buy, high-cost route)
+
+*Check:* The 'Costs: gross vs net' tab shows the drag; dip-buy trades often, so costs bite.
+
+**A2. Break-even and execution timing**
+
+Read the break-even one-way cost; then switch Execution to 'next bar close' and compare.
+
+Open: <http://localhost:8000/#/backtest?strategy=dip_buy&symbols=SPY&execution=next_close>
+
+*Check:* A strategy whose break-even is only a few bps is fragile.
+
+**A3. Stops and sizing**
+
+Open 'position sizing, stop-loss, take-profit' and run EMA 20/50 with a 5% stop and volatility-target sizing.
+
+Open: <http://localhost:8000/#/backtest?strategy=ema_cross&symbols=SPY&fast=20&slow=50&stop_loss_pct=5&sizing=vol_target>
+
+*Check:* The trade list shows stop_loss exits.
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Read the cost model (K7)**
 
 Open common/backtest.py and read CostModel and COST_PRESETS (zero, alpaca_retail, per_share_broker, high_cost). Note that regulatory fees apply to sells only and that a trade costs half the spread plus slippage.
@@ -1527,6 +1989,42 @@ Run: python -m pipeline backtest --custom spread_bps=3 slippage_bps=3 and record
 *A7, A8, K7 | 25 min | stage: Automation | folder: [`labs/Lab16-paper-trading-bot/`](../labs/Lab16-paper-trading-bot/)*
 
 Build pipeline/risk.py and pipeline/runner.py: `python -m pipeline run --once | --loop` with the market clock, risk checks, kill switch and trade log; run a 2025 forward test; run the strategy live on the paper account for a few cycles; and schedule it with cron, launchd or Windows Task Scheduler.
+
+#### Part A - In the Trading Simulator
+
+**A1. Create the bot**
+
+Paper Trading > + New bot: EMA crossover 10/30 on SPY, schedule 'every 10s', simulator broker, replay from 2025-01-02.
+
+Open: <http://localhost:8000/#/trading?new=1&strategy=ema_cross> (Paper Trading > New bot (EMA cross))
+
+*Check:* The bot appears with status stopped.
+
+**A2. Start it and watch**
+
+Press Start (the worker must run: `uv run trader worker` or `uv run trader serve --with-worker`). Every cycle replays one trading day: it sees bars to yesterday's close and its orders fill at today's open. Or press 'Run one cycle now' repeatedly.
+
+Open: <http://localhost:8000/#/trading>
+
+*Check:* Equity curve grows cycle by cycle; the Pipeline Map path lights up during each cycle.
+
+**A3. Kill switch**
+
+Press the bot's Kill switch, then try 'Run one cycle now'. Release it. Try the global kill switch in the top bar too.
+
+Open: <http://localhost:8000/#/trading>
+
+*Check:* Cycles report 'kill switch ON - no orders sent'; the Risk stage turns red on the Pipeline Map.
+
+**A4. Backtest vs forward**
+
+Press Compare in 'Backtest vs forward test'.
+
+Open: <http://localhost:8000/#/trading>
+
+*Check:* The curves track closely; you can explain the remaining gap (whole shares, fills, timing).
+
+#### Part B - In Code with Your AI Assistant
 
 **Step 1: Build the risk layer and the kill switch (A7)**
 
@@ -1611,6 +2109,34 @@ Run: python -m pipeline schedule and read the three entries. Only install one if
 
 Build pipeline/webhook.py: a webhook receiver that turns TradingView alert JSON into a pipeline decision (validation -> signal -> risk -> execution), test it with a local alert simulator and a self-test, and configure a real TradingView strategy alert.
 
+#### Part A - In the Trading Simulator
+
+**A1. Copy the alert template**
+
+Integrations > TradingView webhook: copy the URL and the JSON alert message (reveal the secret only on your own machine).
+
+Open: <http://localhost:8000/#/integrations> (Integrations > TradingView webhook)
+
+*Check:* You know which placeholders TradingView fills in.
+
+**A2. Run the self-test**
+
+Press 'Run self-test (7 simulated alerts)'.
+
+Open: <http://localhost:8000/#/integrations>
+
+*Check:* 7/7: valid buy and sell (200), wrong secret (401), symbol not allowed and qty too large (422), malformed (400), retry ignored (200 duplicate).
+
+**A3. Real alerts (paid TradingView plan)**
+
+Expose the app with `ngrok http 8000`, create an alert on the exported Pine strategy with the webhook URL https://<tunnel>/api/webhooks/tradingview and the message. Optionally tick 'Reject alerts that disagree with the app's own signal'.
+
+Open: <http://localhost:8000/#/integrations>
+
+*Check:* The alert appears in the audit log and its order in Paper Trading > Orders (source webhook).
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Set the shared secret (A7)**
 
 In labs/.env set WEBHOOK_SECRET to a long random string (for example the output of python3 -c "import secrets; print(secrets.token_urlsafe(24))"). Without it the receiver uses a demo secret and prints a warning.
@@ -1690,6 +2216,39 @@ Review labs/Lab17-tradingview-webhook/tradingview_alert_message.json and lcc_web
 
 Build `python -m pipeline diagnose` to run automated look-ahead (features and execution), cost-drag, overfitting and survivorship checks on any strategy and on the junior quant's exhibit, and write a PASS / WARN / FAIL report with a go-live verdict.
 
+#### Part A - In the Trading Simulator
+
+**A1. Diagnose the biased exhibit**
+
+Research > Diagnostics on 'Lab 18 exhibit: biased smoothed momentum' (seeded custom strategy).
+
+Open: <http://localhost:8000/#/research/diagnostics?strategy=custom_lab18_biased_smoothed_momentum> (Research > Diagnostics (Lab 18 exhibit))
+
+*Check:* Look-ahead (features) FAIL: rolling(center=True) uses future bars. Verdict BLOCK.
+
+**A2. Fix it in the Strategy Builder**
+
+Open the exhibit in the Strategy Builder, change center=True to center=False, Validate, Save.
+
+Open: <http://localhost:8000/#/builder?key=custom_lab18_biased_smoothed_momentum> (Strategy Builder (exhibit))
+
+*Check:* The validation's look-ahead check now passes.
+
+**A3. Re-run diagnostics**
+
+Diagnose the fixed strategy; compare the same-bar vs next-bar Sharpe and the cost-drag row.
+
+Open: <http://localhost:8000/#/research/diagnostics?strategy=custom_lab18_biased_smoothed_momentum>
+
+```bash
+smooth = data['close'].rolling(5, center=True).mean()   # BUG: uses t+1 and t+2
+smooth = data['close'].rolling(5).mean()               # FIX: past prices only
+```
+
+*Check:* No FAIL on look-ahead; cost drag and overfitting WARN explained.
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Run the suspicious backtest (A9)**
 
 Run: python3 Lab18-diagnose-bias/buggy_backtest.py. Record the CAGR, Sharpe ratio and win rate.
@@ -1763,6 +2322,34 @@ Using labs/_outputs/Lab18_diagnostics.csv, write a 4-sentence note for the inves
 
 Build `python -m pipeline report` to compare the research backtest with the runner's forward-test logs, run monitoring checks with thresholds, and generate a tearsheet and a markdown report with data-driven insights and a recommendation.
 
+#### Part A - In the Trading Simulator
+
+**A1. Export the tearsheet**
+
+Backtest page (or Analytics) > PDF tearsheet for your best backtest; also export the equity and trades CSV.
+
+Open: <http://localhost:8000/#/analytics> (Analytics > PDF tearsheet)
+
+*Check:* The PDF has equity vs benchmark, drawdown, monthly heatmap, metrics and the cost table.
+
+**A2. Backtest vs forward**
+
+Analytics: select your Lab 16 bot under 'Bot (backtest vs forward)'.
+
+Open: <http://localhost:8000/#/analytics>
+
+*Check:* Explain every material gap (fills, sizing, costs, timing).
+
+**A3. Draw insights**
+
+Monthly heatmap: in which regimes did the strategy earn its returns, what drove its drawdowns?
+
+Open: <http://localhost:8000/#/analytics>
+
+*Check:* Two or three insights, not just numbers.
+
+#### Part B - In Code with Your AI Assistant
+
 **Step 1: Make sure the forward-test logs exist (A8)**
 
 The stage reads _outputs/Lab16_equity_log.csv and _outputs/trade_log.csv from the Lab 16 runner; if either is missing it runs the 2025 replay itself. Run python -m pipeline run --loop if you want fresh logs.
@@ -1831,6 +2418,58 @@ Read labs/_outputs/Lab19_report.md. Rewrite sections 5 and 6 for Lion City Capit
 *A7, A10, K1 | 20 min | stage: End-to-end pipeline | folder: [`labs/Lab20-agentic-capstone/`](../labs/Lab20-agentic-capstone/)*
 
 Build pipeline/agents.py (analyst, researcher, trader and risk agents; rule-based by default, Claude optional) and pipeline/e2e.py (`python -m pipeline e2e`) that runs every stage in order with gates, then evaluate the pipeline and the role of human oversight.
+
+#### Part A - In the Trading Simulator
+
+**A1. Run the multi-agent desk**
+
+AI Agents > Run multi-agent analysis on NVDA, AAPL, SPY. Read each agent's card: three analysts, the two-round bull/bear debate, the trader, the risk manager, the hard-limit gate (code) and the portfolio manager.
+
+Open: <http://localhost:8000/#/agents> (AI Agents > desk)
+
+*Check:* Eight agent entries per symbol plus the code gate; the brain badge shows which provider or rules answered.
+
+**A2. Human approval**
+
+Approve (or reject) the proposals. Approved buys become paper bracket orders in the regular session or extended-hours limit orders overnight.
+
+Open: <http://localhost:8000/#/agents>
+
+*Check:* Run status 'executed' and the orders visible in Paper Trading (source agent).
+
+**A3. Always-on agent**
+
+AI Agents > Always-on agent: enable it with a 60-minute wake-up (the worker must run), or press 'Wake it now'. Check Memory.
+
+Open: <http://localhost:8000/#/agents>
+
+*Check:* A new always_on run and memory notes appear.
+
+**A4. Write your own strategy**
+
+Strategy Builder: start from a template, write your idea, Validate (look-ahead check), Save.
+
+Open: <http://localhost:8000/#/builder?template=ema_rsi> (Strategy Builder (EMA + RSI template))
+
+*Check:* Your strategy appears in the Strategy Library with an auto-generated parameter form.
+
+**A5. Backtest, diagnose and forward-test it**
+
+Backtest it, run Diagnostics, then create a paper bot for it and start it.
+
+Open: <http://localhost:8000/#/trading?new=1>
+
+*Check:* Pipeline Map > Strategy lifecycle for your strategy shows the gates it passed.
+
+**A6. End-to-end on the Pipeline Map**
+
+Open the Pipeline Map and press 'Run a bot cycle'. Then switch to 'Strategy lifecycle'.
+
+Open: <http://localhost:8000/#/pipeline> (Pipeline Map)
+
+*Check:* All 14 stages have run; you can walk a colleague through each stage.
+
+#### Part B - In Code with Your AI Assistant
 
 **Step 1: Build the agent layer (K1, A7)**
 
