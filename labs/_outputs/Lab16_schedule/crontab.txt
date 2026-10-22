@@ -1,6 +1,0 @@
-# Lion City Capital pipeline - one cycle at 09:35 New York time, Mon-Fri
-# Singapore time: 21:35 (US summer time) / 22:35 (US winter time)
-CRON_TZ=America/New_York
-35 9 * * 1-5 cd '/Users/alfredang/Documents/Supporting Document/Tertiary Infotech/Tertiary IBF Projects/TGS-2023018794 - Machine Learning 101 for Financial Trading/_courseware-source/labs' && /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pipeline run --once >> _outputs/scheduler.log 2>&1
-# macOS cron ignores CRON_TZ - use local Singapore time instead and change it twice a year:
-# 35 21 * * 1-5 cd '/Users/alfredang/Documents/Supporting Document/Tertiary Infotech/Tertiary IBF Projects/TGS-2023018794 - Machine Learning 101 for Financial Trading/_courseware-source/labs' && /Library/Frameworks/Python.framework/Versions/3.13/bin/python3 -m pipeline run --once >> _outputs/scheduler.log 2>&1

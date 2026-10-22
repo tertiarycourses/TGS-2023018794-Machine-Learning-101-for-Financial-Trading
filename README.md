@@ -1,6 +1,6 @@
 # Machine Learning 101 for Financial Trading
 
-A hands-on IBF-accredited course on quant and algorithmic stock trading: learners turn trading ideas into testable hypotheses, model them with machine learning, backtest them with realistic costs and run them as an automated paper-trading pipeline on Alpaca and TradingView - with AI writing the code, so the focus stays on the algorithms.
+A hands-on IBF-accredited course on quant and algorithmic stock trading: learners turn trading ideas into testable hypotheses, model them with machine learning, backtest them with realistic costs and run them as an automated paper-trading pipeline on Alpaca and TradingView - with no coding required: the default low-code edition runs every lab in the course's Trading Simulator.
 
 | Course detail | Information |
 |---|---|
@@ -29,53 +29,74 @@ Algorithms place most orders in today's equity markets, and machine learning and
 3. **Machine Learning Models, Statistical Modelling and A/B Testing for Trading Signals** (Day 2, Labs 10-14) - Types of Statistical Analyses, Data Models, Algorithms and Computational Methods; Supervised Learning Models for Trading Signals; Unsupervised Learning: Clustering and PCA for Market Regimes; Statistical Modelling Techniques for Financial Time Series; A/B Testing Trading Strategies; Pairs Trading: Statistical Arbitrage as a Hedging Algorithm.
 4. **Building an End-to-End Algorithmic Trading Pipeline: Backtest, Forward Test and Performance Analysis** (Day 2, Labs 15-20) - Architecture of an End-to-End Algorithmic Trading Pipeline; Backtesting with Realistic Trading Costs; Forward Testing with Automated Paper Trading; Potential Reasons for Unintended Outcomes and How to Diagnose Them; Performance Analysis, Insights and Reporting.
 
+## Two editions
+
+| Edition | Who it is for | Labs |
+|---|---|---|
+| **Low code (default for learners)** - [`courseware_lowcode/`](courseware_lowcode/) | The IBF course as delivered in class. No coding: every lab is done in the Trading Simulator, and an optional [Prompt Library](courseware_lowcode/labs_lowcode/Prompt_Library.md) gives one AI prompt per lab for learners who want the code generated for them. | [`labs_lowcode/`](courseware_lowcode/labs_lowcode/) - one instruction PDF per lab |
+| Full code (optional) - [`courseware_fullcode/`](courseware_fullcode/) | Supplementary edition for learners who want to write and run the Python themselves. Each lab is a simulator step followed by the same pipeline stage in code. | [`labs_fullcode/`](courseware_fullcode/labs_fullcode/) - instruction PDFs, starter `.py` / `.pine` files, solutions, the `pipeline/` package and bundled data |
+
+Start with the low-code edition. The full-code edition covers the same topics and labs and is not required for the course or its assessment.
+
 ## Labs
 
-Each lab adds one stage to a single algorithmic-trading pipeline. Every lab folder holds a `LabNN_Instructions.pdf` lab manual (step-by-step instructions, AI-assistant prompts and checks) and its runnable `.py` / `.pine` files; all labs also run offline on bundled market data.
+Each lab adds one stage to a single algorithmic-trading pipeline, and every lab runs offline on bundled market data.
 
-| Lab | Pipeline stage | Title | Lab manual |
-|---|---|---|---|
-| 01 | Configuration | [Pipeline Skeleton, Configuration and the Alpaca Paper Account](labs/Lab01-alpaca-setup/) | [PDF](labs/Lab01-alpaca-setup/Lab01_Instructions.pdf) |
-| 02 | Data validation | [Data-Validation Stage: Cross-Check Pipeline Bars against TradingView](labs/Lab02-tradingview-charts/) | [PDF](labs/Lab02-tradingview-charts/Lab02_Instructions.pdf) |
-| 03 | Ingestion | [Ingestion Stage: Multi-Timeframe Bars, Headlines and Data Quality](labs/Lab03-alpaca-market-data/) | [PDF](labs/Lab03-alpaca-market-data/Lab03_Instructions.pdf) |
-| 04 | Hypothesis | [Hypothesis Stage: from a Written Card to an Automated Statistical Test](labs/Lab04-trading-hypothesis/) | [PDF](labs/Lab04-trading-hypothesis/Lab04_Instructions.pdf) |
-| 05 | Indicators | [Indicator Stage: Pine Script v6 Indicators and their Python Twins](labs/Lab05-pine-indicators/) | [PDF](labs/Lab05-pine-indicators/Lab05_Instructions.pdf) |
-| 06 | Strategy prototype | [Strategy Prototype: TradingView Strategy Tester, Paper Trading from the Chart and Pipeline Reconciliation](labs/Lab06-pine-strategy-tester/) | [PDF](labs/Lab06-pine-strategy-tester/Lab06_Instructions.pdf) |
-| 07 | Signals | [Signal Stage: a Library of Trend, Mean-Reversion, Momentum and Breakout Signals](labs/Lab07-python-indicators/) | [PDF](labs/Lab07-python-indicators/Lab07_Instructions.pdf) |
-| 08 | Execution | [Execution Stage: an Order Manager that Trades the Paper Account in Any Session](labs/Lab08-paper-orders/) | [PDF](labs/Lab08-paper-orders/Lab08_Instructions.pdf) |
-| 09 | Evaluation | [Evaluation Stage: Performance and Risk Metrics with a Benchmark Table](labs/Lab09-performance-metrics/) | [PDF](labs/Lab09-performance-metrics/Lab09_Instructions.pdf) |
-| 10 | Strategy search | [Strategy-Search Stage: Grid Search, Out-of-Sample Ranking and Decay](labs/Lab10-strategy-grid-search/) | [PDF](labs/Lab10-strategy-grid-search/Lab10_Instructions.pdf) |
-| 11 | ML signal | [ML-Signal Stage: a Walk-Forward Classifier from Probability to Position](labs/Lab11-ml-signal-classifier/) | [PDF](labs/Lab11-ml-signal-classifier/Lab11_Instructions.pdf) |
-| 12 | Regime filter | [Regime-Filter Stage: PCA and K-Means as a Gate on the Signals](labs/Lab12-market-regimes/) | [PDF](labs/Lab12-market-regimes/Lab12_Instructions.pdf) |
-| 13 | A/B test | [A/B-Test Stage: a Statistical Decision before Capital Moves](labs/Lab13-ab-testing/) | [PDF](labs/Lab13-ab-testing/Lab13_Instructions.pdf) |
-| 14 | Pairs / stat-arb | [Pairs Stage: a Hedged, Market-Neutral Statistical-Arbitrage Sleeve](labs/Lab14-pairs-trading/) | [PDF](labs/Lab14-pairs-trading/Lab14_Instructions.pdf) |
-| 15 | Backtest engine | [Backtest-Engine Stage: Cost Models, Execution Timing and Break-Even](labs/Lab15-trading-costs/) | [PDF](labs/Lab15-trading-costs/Lab15_Instructions.pdf) |
-| 16 | Automation | [Automation Stage: a Scheduled, Risk-Checked Forward Test and Live Paper Trading](labs/Lab16-paper-trading-bot/) | [PDF](labs/Lab16-paper-trading-bot/Lab16_Instructions.pdf) |
-| 17 | Event-driven automation | [Event-Driven Automation: TradingView Webhook to Signal, Risk and Execution](labs/Lab17-tradingview-webhook/) | [PDF](labs/Lab17-tradingview-webhook/Lab17_Instructions.pdf) |
-| 18 | Diagnostics | [Diagnostics Stage: Automated Bias Checks before Go-Live](labs/Lab18-diagnose-bias/) | [PDF](labs/Lab18-diagnose-bias/Lab18_Instructions.pdf) |
-| 19 | Monitoring and reporting | [Monitoring and Reporting Stage: Automated Tearsheet and Backtest-vs-Forward Report](labs/Lab19-performance-report/) | [PDF](labs/Lab19-performance-report/Lab19_Instructions.pdf) |
-| 20 | End-to-end pipeline | [Capstone: One Command Runs the Pipeline End to End, with an Agentic Layer and Human Approval](labs/Lab20-agentic-capstone/) | [PDF](labs/Lab20-agentic-capstone/Lab20_Instructions.pdf) |
+| Lab | Pipeline stage | Title | Low code (default) | Full code |
+|---|---|---|---|---|
+| 01 | Configuration | Pipeline Skeleton, Configuration and the Alpaca Paper Account | [Lab manual](courseware_lowcode/labs_lowcode/Lab01-alpaca-setup/Lab01_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab01-alpaca-setup/) |
+| 02 | Data validation | Data-Validation Stage: Cross-Check Pipeline Bars against TradingView | [Lab manual](courseware_lowcode/labs_lowcode/Lab02-tradingview-charts/Lab02_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab02-tradingview-charts/) |
+| 03 | Ingestion | Ingestion Stage: Multi-Timeframe Bars, Headlines and Data Quality | [Lab manual](courseware_lowcode/labs_lowcode/Lab03-alpaca-market-data/Lab03_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab03-alpaca-market-data/) |
+| 04 | Hypothesis | Hypothesis Stage: from a Written Card to an Automated Statistical Test | [Lab manual](courseware_lowcode/labs_lowcode/Lab04-trading-hypothesis/Lab04_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab04-trading-hypothesis/) |
+| 05 | Indicators | Indicator Stage: Pine Script v6 Indicators and their Python Twins | [Lab manual](courseware_lowcode/labs_lowcode/Lab05-pine-indicators/Lab05_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab05-pine-indicators/) |
+| 06 | Strategy prototype | Strategy Prototype: TradingView Strategy Tester, Paper Trading from the Chart and Pipeline Reconciliation | [Lab manual](courseware_lowcode/labs_lowcode/Lab06-pine-strategy-tester/Lab06_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab06-pine-strategy-tester/) |
+| 07 | Signals | Signal Stage: a Library of Trend, Mean-Reversion, Momentum and Breakout Signals | [Lab manual](courseware_lowcode/labs_lowcode/Lab07-technical-indicators/Lab07_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab07-technical-indicators/) |
+| 08 | Execution | Execution Stage: an Order Manager that Trades the Paper Account in Any Session | [Lab manual](courseware_lowcode/labs_lowcode/Lab08-paper-orders/Lab08_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab08-paper-orders/) |
+| 09 | Evaluation | Evaluation Stage: Performance and Risk Metrics with a Benchmark Table | [Lab manual](courseware_lowcode/labs_lowcode/Lab09-performance-metrics/Lab09_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab09-performance-metrics/) |
+| 10 | Strategy search | Strategy-Search Stage: Grid Search, Out-of-Sample Ranking and Decay | [Lab manual](courseware_lowcode/labs_lowcode/Lab10-strategy-grid-search/Lab10_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab10-strategy-grid-search/) |
+| 11 | ML signal | ML-Signal Stage: a Walk-Forward Classifier from Probability to Position | [Lab manual](courseware_lowcode/labs_lowcode/Lab11-ml-signal-classifier/Lab11_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab11-ml-signal-classifier/) |
+| 12 | Regime filter | Regime-Filter Stage: PCA and K-Means as a Gate on the Signals | [Lab manual](courseware_lowcode/labs_lowcode/Lab12-market-regimes/Lab12_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab12-market-regimes/) |
+| 13 | A/B test | A/B-Test Stage: a Statistical Decision before Capital Moves | [Lab manual](courseware_lowcode/labs_lowcode/Lab13-ab-testing/Lab13_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab13-ab-testing/) |
+| 14 | Pairs / stat-arb | Pairs Stage: a Hedged, Market-Neutral Statistical-Arbitrage Sleeve | [Lab manual](courseware_lowcode/labs_lowcode/Lab14-pairs-trading/Lab14_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab14-pairs-trading/) |
+| 15 | Backtest engine | Backtest-Engine Stage: Cost Models, Execution Timing and Break-Even | [Lab manual](courseware_lowcode/labs_lowcode/Lab15-trading-costs/Lab15_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab15-trading-costs/) |
+| 16 | Automation | Automation Stage: a Scheduled, Risk-Checked Forward Test and Live Paper Trading | [Lab manual](courseware_lowcode/labs_lowcode/Lab16-paper-trading-bot/Lab16_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab16-paper-trading-bot/) |
+| 17 | Event-driven automation | Event-Driven Automation: TradingView Webhook to Signal, Risk and Execution | [Lab manual](courseware_lowcode/labs_lowcode/Lab17-tradingview-webhook/Lab17_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab17-tradingview-webhook/) |
+| 18 | Diagnostics | Diagnostics Stage: Automated Bias Checks before Go-Live | [Lab manual](courseware_lowcode/labs_lowcode/Lab18-diagnose-bias/Lab18_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab18-diagnose-bias/) |
+| 19 | Monitoring and reporting | Monitoring and Reporting Stage: Automated Tearsheet and Backtest-vs-Forward Report | [Lab manual](courseware_lowcode/labs_lowcode/Lab19-performance-report/Lab19_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab19-performance-report/) |
+| 20 | End-to-end pipeline | Capstone: One Command Runs the Pipeline End to End, with an Agentic Layer and Human Approval | [Lab manual](courseware_lowcode/labs_lowcode/Lab20-agentic-capstone/Lab20_Instructions.pdf) | [Code + manual](courseware_fullcode/labs_fullcode/Lab20-agentic-capstone/) |
 
 ## Course software
 
-The labs are designed to run in the course's trading simulator, [alfredang/algorithmic-trader-bot](https://github.com/alfredang/algorithmic-trader-bot) - a local web app (uv or Docker Compose) for data, strategies, backtesting, paper trading, analytics and multi-agent AI. Download and installation steps are in the Learner Guide (Platform Guides) and the Lab 1 manual. Every lab has two parts: **Part A** in the simulator (its Course Labs page opens each step pre-filled), then **Part B**, the same pipeline stage in code built with an AI coding assistant from the prompts in the lab's instruction PDF.
+The labs run in the course's Trading Simulator, [alfredang/algorithmic-trader-bot](https://github.com/alfredang/algorithmic-trader-bot) - a local web app (uv or Docker Compose) for data, strategies, backtesting, paper trading, analytics and multi-agent AI. Its Course Labs page opens each lab step pre-filled. Download and installation steps are in the Learner Guide and the Lab 01 manual.
 
 ## Public package
 
+**Low-code edition (default)**
+
 | Item | Files |
 |---|---|
-| Trainer slides | [PPTX](courseware/Slides_ML%20101%20for%20Financial%20Trading_v2.0.pptx) · [PDF](courseware/Slides_ML%20101%20for%20Financial%20Trading_v2.0.pdf) |
-| Lesson Plan | [DOCX](courseware/LP_ML%20101%20for%20Financial%20Trading_v2.0.docx) · [PDF](courseware/LP_ML%20101%20for%20Financial%20Trading_v2.0.pdf) |
-| Learner Guide | [DOCX](courseware/LG_ML%20101%20for%20Financial%20Trading_v2.0.docx) · [PDF](courseware/LG_ML%20101%20for%20Financial%20Trading_v2.0.pdf) · [Markdown](courseware/LG_ML%20101%20for%20Financial%20Trading_v2.0.md) |
-| Facilitator Guide (public edition, no assessment keys) | [DOCX](courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.0.docx) · [PDF](courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.0.pdf) |
-| Labs | [`labs/`](labs/) - 20 labs with lab manuals, the `pipeline/` package, shared `common/` library and bundled data |
+| Trainer slides | [PPTX](courseware_lowcode/courseware/Slides_ML%20101%20for%20Financial%20Trading_v2.3.pptx) · [PDF](courseware_lowcode/courseware/Slides_ML%20101%20for%20Financial%20Trading_v2.3.pdf) |
+| Lesson Plan | [DOCX](courseware_lowcode/courseware/LP_ML%20101%20for%20Financial%20Trading_v2.3.docx) · [PDF](courseware_lowcode/courseware/LP_ML%20101%20for%20Financial%20Trading_v2.3.pdf) |
+| Learner Guide | [DOCX](courseware_lowcode/courseware/LG_ML%20101%20for%20Financial%20Trading_v2.3.docx) · [PDF](courseware_lowcode/courseware/LG_ML%20101%20for%20Financial%20Trading_v2.3.pdf) · [Markdown](courseware_lowcode/courseware/LG_ML%20101%20for%20Financial%20Trading_v2.3.md) |
+| Facilitator Guide (public edition, no assessment keys) | [DOCX](courseware_lowcode/courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.3.docx) · [PDF](courseware_lowcode/courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.3.pdf) |
+| Labs | [`labs_lowcode/`](courseware_lowcode/labs_lowcode/) - 20 lab manuals and the [Prompt Library](courseware_lowcode/labs_lowcode/Prompt_Library.html) |
+
+**Full-code edition (optional)**
+
+| Item | Files |
+|---|---|
+| Trainer slides | [PPTX](courseware_fullcode/courseware/Slides_ML%20101%20Fin%20Trading%20Full%20Code_v2.3.pptx) · [PDF](courseware_fullcode/courseware/Slides_ML%20101%20Fin%20Trading%20Full%20Code_v2.3.pdf) |
+| Lesson Plan | [DOCX](courseware_fullcode/courseware/LP_ML%20101%20Fin%20Trading%20Full%20Code_v2.3.docx) · [PDF](courseware_fullcode/courseware/LP_ML%20101%20Fin%20Trading%20Full%20Code_v2.3.pdf) |
+| Learner Guide | [DOCX](courseware_fullcode/courseware/LG_ML%20101%20Fin%20Trading%20Full%20Code_v2.3.docx) · [PDF](courseware_fullcode/courseware/LG_ML%20101%20Fin%20Trading%20Full%20Code_v2.3.pdf) · [Markdown](courseware_fullcode/courseware/LG_ML%20101%20Fin%20Trading%20Full%20Code_v2.3.md) |
+| Facilitator Guide (public edition, no assessment keys) | [DOCX](courseware_fullcode/courseware/Facilitator-Guide_ML%20101%20Fin%20Trading%20Full%20Code_v2.3.docx) · [PDF](courseware_fullcode/courseware/Facilitator-Guide_ML%20101%20Fin%20Trading%20Full%20Code_v2.3.pdf) |
+| Labs | [`labs_fullcode/`](courseware_fullcode/labs_fullcode/) - 20 labs with manuals, starter code and solutions, the `pipeline/` package, shared `common/` library and bundled data |
 
 ## Distribution boundary
 
-This repository publishes the current learner and trainer courseware only. The assessment (question papers, answer keys, Practical Performance pack), the full Facilitator Guide and the Assessment Plan are trainer-only and are kept off GitHub. Credentials are never committed: put your own Alpaca paper keys in `labs/.env`, which is git-ignored. The bundled market data (Yahoo Finance via yfinance) is for training use only.
+This repository publishes the current learner and trainer courseware of both editions. The assessment (question papers, answer keys, rubric, Practical Performance pack), the full Facilitator Guide and the Assessment Plan are trainer-only and are kept off GitHub. Credentials are never committed: learners enter their own Alpaca paper keys in the simulator's Integrations page (full-code learners may use a git-ignored `.env`, see `.env.example`). The bundled market data (Yahoo Finance via yfinance) is for training use only.
 
 > Lion City Capital and every scenario are fictitious and for training only. All trading in this course is paper (simulated) trading. Nothing here is investment advice.
 
 ## Provider
 
-Developed and delivered by **Tertiary Infotech Academy Pte Ltd** (UEN 201200696W), 12 Woodlands Square, #07-85/86/87, Woods Square Tower 1, Singapore 737715. Course version 2.0 (18 October 2026).
+Developed and delivered by **Tertiary Infotech Academy Pte Ltd** (UEN 201200696W), 12 Woodlands Square, #07-85/86/87, Woods Square Tower 1, Singapore 737715. Course version 2.3 (22 October 2026).
