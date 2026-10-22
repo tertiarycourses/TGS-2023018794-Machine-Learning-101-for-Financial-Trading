@@ -1,6 +1,6 @@
 # Learner Guide - Machine Learning 101 for Financial Trading
 
-FSE-DAT-3019-1.1 Data Analytics and Computational Modelling (Proficiency Level 3) | Version 2.3 (22 October 2026) | Tertiary Infotech Academy Pte Ltd
+FSE-DAT-3019-1.1 Data Analytics and Computational Modelling (Proficiency Level 3) | Version 2.4 (22 October 2026) | Tertiary Infotech Academy Pte Ltd
 
 > Lion City Capital and every scenario in these materials are fictitious and for training only. All trading in this course is paper (simulated) trading. Nothing in these materials is investment advice or a recommendation to trade any security.
 
