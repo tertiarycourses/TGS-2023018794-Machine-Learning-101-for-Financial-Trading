@@ -75,20 +75,20 @@ The labs run in the course's Trading Simulator, [alfredang/algorithmic-trader-bo
 
 | Item | Files |
 |---|---|
-| Trainer slides | [PPTX](courseware_lowcode/courseware/Slides_ML%20101%20for%20Financial%20Trading_v2.4.pptx) · [PDF](courseware_lowcode/courseware/Slides_ML%20101%20for%20Financial%20Trading_v2.4.pdf) |
-| Lesson Plan | [DOCX](courseware_lowcode/courseware/LP_ML%20101%20for%20Financial%20Trading_v2.4.docx) · [PDF](courseware_lowcode/courseware/LP_ML%20101%20for%20Financial%20Trading_v2.4.pdf) |
-| Learner Guide | [DOCX](courseware_lowcode/courseware/LG_ML%20101%20for%20Financial%20Trading_v2.4.docx) · [PDF](courseware_lowcode/courseware/LG_ML%20101%20for%20Financial%20Trading_v2.4.pdf) · [Markdown](courseware_lowcode/courseware/LG_ML%20101%20for%20Financial%20Trading_v2.4.md) |
-| Facilitator Guide (public edition, no assessment keys) | [DOCX](courseware_lowcode/courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.4.docx) · [PDF](courseware_lowcode/courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.4.pdf) |
+| Trainer slides | [PPTX](courseware_lowcode/courseware/Slides_ML%20101%20for%20Financial%20Trading_v2.7.pptx) · [PDF](courseware_lowcode/courseware/Slides_ML%20101%20for%20Financial%20Trading_v2.7.pdf) |
+| Lesson Plan | [DOCX](courseware_lowcode/courseware/LP_ML%20101%20for%20Financial%20Trading_v2.7.docx) · [PDF](courseware_lowcode/courseware/LP_ML%20101%20for%20Financial%20Trading_v2.7.pdf) |
+| Learner Guide | [DOCX](courseware_lowcode/courseware/LG_ML%20101%20for%20Financial%20Trading_v2.7.docx) · [PDF](courseware_lowcode/courseware/LG_ML%20101%20for%20Financial%20Trading_v2.7.pdf) · [Markdown](courseware_lowcode/courseware/LG_ML%20101%20for%20Financial%20Trading_v2.7.md) |
+| Facilitator Guide (public edition, no assessment keys) | [DOCX](courseware_lowcode/courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.7.docx) · [PDF](courseware_lowcode/courseware/Facilitator-Guide_ML%20101%20for%20Financial%20Trading_v2.7.pdf) |
 | Labs | [`labs_lowcode/`](courseware_lowcode/labs_lowcode/) - 20 lab manuals and the [Prompt Library](courseware_lowcode/labs_lowcode/Prompt_Library.html) |
 
 **Full-code edition (optional)**
 
 | Item | Files |
 |---|---|
-| Trainer slides | [PPTX](courseware_fullcode/courseware/Slides_ML%20101%20Fin%20Trading%20Full%20Code_v2.4.pptx) · [PDF](courseware_fullcode/courseware/Slides_ML%20101%20Fin%20Trading%20Full%20Code_v2.4.pdf) |
-| Lesson Plan | [DOCX](courseware_fullcode/courseware/LP_ML%20101%20Fin%20Trading%20Full%20Code_v2.4.docx) · [PDF](courseware_fullcode/courseware/LP_ML%20101%20Fin%20Trading%20Full%20Code_v2.4.pdf) |
-| Learner Guide | [DOCX](courseware_fullcode/courseware/LG_ML%20101%20Fin%20Trading%20Full%20Code_v2.4.docx) · [PDF](courseware_fullcode/courseware/LG_ML%20101%20Fin%20Trading%20Full%20Code_v2.4.pdf) · [Markdown](courseware_fullcode/courseware/LG_ML%20101%20Fin%20Trading%20Full%20Code_v2.4.md) |
-| Facilitator Guide (public edition, no assessment keys) | [DOCX](courseware_fullcode/courseware/Facilitator-Guide_ML%20101%20Fin%20Trading%20Full%20Code_v2.4.docx) · [PDF](courseware_fullcode/courseware/Facilitator-Guide_ML%20101%20Fin%20Trading%20Full%20Code_v2.4.pdf) |
+| Trainer slides | [PPTX](courseware_fullcode/courseware/Slides_ML%20101%20Fin%20Trading%20Full%20Code_v2.7.pptx) · [PDF](courseware_fullcode/courseware/Slides_ML%20101%20Fin%20Trading%20Full%20Code_v2.7.pdf) |
+| Lesson Plan | [DOCX](courseware_fullcode/courseware/LP_ML%20101%20Fin%20Trading%20Full%20Code_v2.7.docx) · [PDF](courseware_fullcode/courseware/LP_ML%20101%20Fin%20Trading%20Full%20Code_v2.7.pdf) |
+| Learner Guide | [DOCX](courseware_fullcode/courseware/LG_ML%20101%20Fin%20Trading%20Full%20Code_v2.7.docx) · [PDF](courseware_fullcode/courseware/LG_ML%20101%20Fin%20Trading%20Full%20Code_v2.7.pdf) · [Markdown](courseware_fullcode/courseware/LG_ML%20101%20Fin%20Trading%20Full%20Code_v2.7.md) |
+| Facilitator Guide (public edition, no assessment keys) | [DOCX](courseware_fullcode/courseware/Facilitator-Guide_ML%20101%20Fin%20Trading%20Full%20Code_v2.7.docx) · [PDF](courseware_fullcode/courseware/Facilitator-Guide_ML%20101%20Fin%20Trading%20Full%20Code_v2.7.pdf) |
 | Labs | [`labs_fullcode/`](courseware_fullcode/labs_fullcode/) - 20 labs with manuals, starter code and solutions, the `pipeline/` package, shared `common/` library and bundled data |
 
 ## Distribution boundary
@@ -99,4 +99,4 @@ This repository publishes the current learner and trainer courseware of both edi
 
 ## Provider
 
-Developed and delivered by **Tertiary Infotech Academy Pte Ltd** (UEN 201200696W), 12 Woodlands Square, #07-85/86/87, Woods Square Tower 1, Singapore 737715. Course version 2.4 (22 October 2026).
+Developed and delivered by **Tertiary Infotech Academy Pte Ltd** (UEN 201200696W), 12 Woodlands Square, #07-85/86/87, Woods Square Tower 1, Singapore 737715. Course version 2.7 (23 October 2026).

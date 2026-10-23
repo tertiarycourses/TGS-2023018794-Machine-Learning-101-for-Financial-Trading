@@ -1,6 +1,6 @@
 # Learner Guide - Machine Learning 101 for Financial Trading
 
-FSE-DAT-3019-1.1 Data Analytics and Computational Modelling (Proficiency Level 3) | Version 2.4 (22 October 2026) | Tertiary Infotech Academy Pte Ltd
+FSE-DAT-3019-1.1 Data Analytics and Computational Modelling (Proficiency Level 3) | Version 2.7 (23 October 2026) | Tertiary Infotech Academy Pte Ltd
 
 > Lion City Capital and every scenario in these materials are fictitious and for training only. All trading in this course is paper (simulated) trading. Nothing in these materials is investment advice or a recommendation to trade any security.
 
@@ -795,6 +795,39 @@ Open: <http://localhost:8000/#/help?tab=glossary>
 - Advanced computational methods: grid and random search over strategy parameters, Monte Carlo simulation and bootstrapping, walk-forward optimisation, and gradient-boosted ensembles.
 - Strategy search is itself an algorithm: testing many parameter combinations on in-sample data and then confirming only the best few out of sample - always counting how many combinations were tried.
 
+#### Supervised Learning: Learning from Labelled Examples
+
+- **Definition:** The model learns a mapping from inputs (features) to a known answer (the label), using history in which the answer is already known.
+- **In trading:** Features known at today's close - 5-day return, RSI, volatility. Label: did the price rise the NEXT day (classification) or by how much (regression)?
+- **What it gives you:** A prediction for a new day - P(up) = 0.55 or an expected return. A rule such as 'long if P(up) > 0.55' turns it into a position.
+- **Watch out for:** Features must use only data known at decision time. Accuracy near 50% is normal for daily direction - judge the strategy net of costs.
+
+#### Unsupervised Learning: Finding Structure Without Labels
+
+- **Definition:** There is no answer key. The algorithm groups or compresses the data by similarity, and you decide what the groups mean.
+- **In trading:** Cluster days by return and volatility into regimes; PCA reduces many correlated assets to a few factors; cluster stocks for diversification.
+- **What it gives you:** A group per day or asset (calm / normal / stressed) or a few factors - inputs to a decision, such as cutting position size when stressed, not trades by themselves.
+- **Watch out for:** Clusters have no built-in meaning and k is your choice. Fit on past data only and re-check as the market changes.
+
+#### Reinforcement Learning: Learning by Action and Reward
+
+- **Definition:** An agent observes a state, takes an action and receives a reward; by trial and error it learns a policy that maximises total reward over time.
+- **In trading:** State: prices, position, time left. Action: buy, hold, sell or how many shares. Reward: P&L net of costs, minus a penalty for risk.
+- **What it gives you:** A policy - the best action for each state. Used for optimal execution of large orders, market making and dynamic hedging, mostly at banks and research labs.
+- **Watch out for:** Needs a realistic simulator and huge amounts of experience; it learns to exploit any flaw in the simulator. Unstable and hard to explain - rarely the first tool.
+
+#### Supervised vs Unsupervised vs Reinforcement Learning
+
+| Aspect | Supervised | Unsupervised | Reinforcement |
+|---|---|---|---|
+| Learns from | Labelled history: features + the known answer | Unlabelled data: features only | Its own experience: states, actions, rewards |
+| Question it answers | What will happen? - predict a target | What patterns exist? - group or compress | What should I do? - choose the next action |
+| Feedback | Error against the correct answer | None - judged by how useful the groups are | A reward, often delayed (profit, cost) |
+| Typical algorithms | Logistic regression, random forest, XGBoost, LSTM | K-means, hierarchical clustering, PCA | Q-learning, policy gradients (PPO) |
+| Trading example | P(SPY up tomorrow) from RSI and recent returns | Calm / normal / stressed market regimes | An agent slicing a 100,000-share order to cut cost |
+| Main risk | Overfitting noise; look-ahead leakage | Meaningless or unstable clusters | Exploiting simulator flaws; unstable training |
+
+
 ### 3.2 Supervised Learning Models for Trading Signals
 
 - Target and features: the target is what you predict (next-day direction); the features are what you know at prediction time (lagged returns, RSI, MACD, volatility, volume change). Any feature using future data is leakage.
@@ -1132,27 +1165,44 @@ Run the same strategy under four cost models and find its break-even cost.
 
 **Step 1. Zero vs Alpaca vs high-cost**
 
-Backtest Dip buy on SPY three times with cost model zero, alpaca_retail and high_cost.
+Run the same strategy three times, changing ONLY the Cost model, to see how much of its profit trading costs eat. The link opens Dip buy after a losing streak on SPY (n down 3, hold 3) with Zero cost chosen. In the left panel, under Costs & execution, pick each cost model below in turn and press Run backtest after each one. After each run open the 'Costs: gross vs net' tab on the right and write down three rows: total, gross CAGR -> net CAGR, and cost drag (CAGR). Every run is kept in the History card, so you can reopen it.
 
-Open: <http://localhost:8000/#/backtest?strategy=dip_buy&symbols=SPY&costs=high_cost> (Backtest SPY dip-buy, high-cost route)
+- **Run 1 - Cost model:** Zero cost (zero): no costs at all, so net = gross. This is the strategy's raw edge.
+- **Run 2 - Cost model:** Alpaca commission-free (alpaca_retail): no commission, but you still pay half the 1 bp spread + 1 bp slippage = about 1.5 bps per trade, plus small regulatory fees on sells.
+- **Run 3 - Cost model:** High-cost route (high_cost): 10 bps commission + half the 5 bp spread + 5 bps slippage = about 17.5 bps per trade - an expensive retail or offshore broker.
+- **Everything else:** leave as opened - Execution next bar open, Benchmark SPY, Start and End blank (all the demo data)
+- **What a bp is:** 1 basis point (bp) = 0.01%, so 17.5 bps on a $10,000 trade costs $17.50
 
-*Check:* The 'Costs: gross vs net' tab shows the drag; dip-buy trades often, so costs bite.
+Open: <http://localhost:8000/#/backtest?strategy=dip_buy&symbols=SPY&costs=zero> (Backtest SPY dip-buy, zero cost first)
+
+*Check:* About 102 trades (203 fills) in every run. Net CAGR falls from 5.09% (zero) to 4.65% (alpaca_retail, about $3,700 of costs) to 0.48% (high_cost, about $33,600 - a third of the $100,000 capital - a cost drag of 4.61% a year). Dip-buy trades often, so every extra bp is paid about 200 times.
 
 **Step 2. Break-even and execution timing**
 
-Read the break-even one-way cost; then switch Execution to 'next bar close' and compare.
+Break-even cost is the one-way cost per trade at which the strategy's net CAGR falls to zero: above it the strategy loses money. It depends only on the strategy, so it is the same in all three Step 1 runs. Read it in the BREAK-EVEN COST tile (top right) or the 'break-even one-way cost' row of the 'Costs: gross vs net' tab, and compare it with the cost per trade of each route in Step 1. Then test the execution assumption: the link opens the high-cost run again with Execution = next bar close. Press Run backtest and compare it with your Step 1 high-cost run.
 
-Open: <http://localhost:8000/#/backtest?strategy=dip_buy&symbols=SPY&execution=next_close>
+- **Execution: next bar open:** the default (like TradingView): the signal is decided at today's close and the order fills at tomorrow's open
+- **Execution: next bar close:** the same signal fills at tomorrow's close instead - a full day later
+- **Cost model:** High-cost route (high_cost) - keep it, so only Execution changes
+- **Compare:** CAGR, Sharpe, the BREAK-EVEN COST tile and gross CAGR -> net CAGR
 
-*Check:* A strategy whose break-even is only a few bps is fragile.
+Open: <http://localhost:8000/#/backtest?strategy=dip_buy&symbols=SPY&costs=high_cost&execution=next_close>
+
+*Check:* Break-even is 19.5 bps. Alpaca's ~1.5 bps leaves plenty of room, but the high-cost route's ~17.5 bps (plus fees) uses almost all of it - that is why its net CAGR was only 0.48%. With next bar close, gross CAGR moves from 5.09% to 7.67%, net CAGR from 0.48% to 2.95% and break-even from 19.5 to 29.0 bps. One fill-timing assumption moved the result that much: a strategy whose break-even is only a few bps, or that depends on the fill assumption, is fragile.
 
 **Step 3. Stops and sizing**
 
-Open 'position sizing, stop-loss, take-profit' and run EMA 20/50 with a 5% stop and volatility-target sizing.
+Now add risk controls to a different strategy, EMA crossover 20/50 on SPY. The link fills in the settings below; click 'position sizing, stop-loss, take-profit...' under Costs & execution to see them. Press Run backtest and open the Trade list tab: the Exit reason column says why each trade closed. Then clear Stop-loss %, set Position sizing back to % of equity (Size 1.0), run again and compare the two.
+
+- **Strategy:** EMA crossover - fast 20, slow 50, symbol SPY
+- **Cost model:** Alpaca commission-free (alpaca_retail)
+- **Position sizing:** volatility target - Target vol (ann.) 0.15, Max leverage 1.0: the position is scaled to 0.15 / SPY's recent volatility (capped at 100% of equity), so it shrinks when the market is volatile
+- **Stop-loss %:** 5 - a long position is sold if the price falls 5% below the entry price; the strategy then waits for a fresh signal before buying again
+- **Take-profit %:** leave blank
 
 Open: <http://localhost:8000/#/backtest?strategy=ema_cross&symbols=SPY&fast=20&slow=50&stop_loss_pct=5&sizing=vol_target>
 
-*Check:* The trade list shows stop_loss exits.
+*Check:* 16 trades: 4 exit with stop_loss, the rest with signal. With the stop and vol-target sizing the strategy is invested about 56% of the time (exposure) against 74% without them, but CAGR is 3.0% against 8.8% and the max drawdown is no better (-29.8% against -25.5%). Risk controls are not free: backtest them, never assume they help.
 
 **Expected in the app:** Gross vs net CAGR, a cost breakdown and the break-even bps.
 
@@ -1208,29 +1258,59 @@ Open: <http://localhost:8000/#/trading>
 
 Send TradingView alerts to the app's webhook and see them pass validation, signal confirmation and risk into paper orders.
 
+#### What This Lab Is For
+
+In Labs 1-16 you start every run yourself. Many real trading bots are started by an event instead - here a TradingView alert. When your strategy fires on a TradingView chart, TradingView sends a short message (JSON) to a web address called a webhook, and the simulator turns that message into a paper order automatically. You do not get a webhook from TradingView: the simulator gives you the address and you paste it into the TradingView alert. Because anyone who finds that address could send it a message, the simulator acts as a gateway and checks every alert before it trades: Is it from us (the secret)? Is it allowed (the symbol allow-list and maximum size)? Is it readable (valid JSON)? Have we seen it already (duplicate)? Optionally, does the app's own signal agree? Only then do the risk checks run and the paper order go in, and every request is written to the audit log. The lesson: automation is only safe when every incoming signal is checked before any order is placed.
+
 #### Lab Steps - In the Trading Simulator
 
 *No coding is needed. Make sure the Trading Simulator is running (installed once - see the guide 'Download, Install and Start the Trading Simulator Software') and open http://localhost:8000. In the sidebar open Course Labs > Lab 17: the app shows the same steps with a Go button that opens each page pre-filled. Every step works offline on the bundled demo data and the built-in paper broker.*
 
 **Step 1. Copy the alert template**
 
-Integrations > TradingView webhook: copy the URL and the JSON alert message (reveal the secret only on your own machine).
+Open Integrations and scroll down to the TradingView webhook card. It holds the two things TradingView needs: where to send an alert (the Webhook URL) and what to send (the Alert message). Read each part below - you paste both into TradingView in Step 3.
+
+- **Webhook URL:** the simulator's address for incoming alerts, ending in /api/webhooks/tradingview. As shown (http://localhost:8000/...) only your own computer can reach it; Step 3 explains how to make it public.
+- **Alert message:** the JSON that TradingView sends with every alert. TradingView replaces each {{...}} placeholder when the alert fires: {{ticker}} = the symbol, {{strategy.order.action}} = buy or sell, {{strategy.order.contracts}} = the quantity, {{close}} = the price, {{timenow}} = the time (part of the alert id).
+- **secret:** a password shared by TradingView and the simulator, so only your alerts are accepted. It is shown masked; press Reveal secret only on your own machine and never share it, paste it into a chat or show it on a slide.
+- **Allowed symbols, Max qty per alert:** the gateway's own limits: an alert for any other symbol, or a larger quantity, is rejected before any order
+- **Reject alerts that disagree with the app's own signal:** optional signal confirmation: the app re-checks each alert against the strategy in 'Confirm with strategy' and rejects a disagreeing alert (HTTP 409). Leave it unticked for this lab.
 
 Open: <http://localhost:8000/#/integrations> (Integrations > TradingView webhook)
 
-*Check:* You know which placeholders TradingView fills in.
+*Check:* You can say what each part of the message is for and which values TradingView fills in (the {{...}} placeholders).
 
 **Step 2. Run the self-test**
 
-Press 'Run self-test (7 simulated alerts)'.
+Press 'Run self-test (7 simulated alerts)'. The app sends itself seven alerts exactly as TradingView would - two good ones and five that each break one rule - so you can watch every safeguard work without a TradingView account or the internet. The HTTP code is the answer the simulator sends back to TradingView: 200 = accepted, 4xx = rejected.
+
+- **1-2. Valid BUY and SELL 5 SPY:** HTTP 200 order submitted - they passed every check and became paper orders
+- **3. Wrong secret:** HTTP 401 - not from you: someone who finds your URL cannot trade
+- **4. Symbol not allowed (TSLA):** HTTP 422 - not on the allow-list
+- **5. Qty above the limit (5,000 AAPL):** HTTP 422 - a typo or runaway alert is stopped by the maximum size
+- **6. Malformed message:** HTTP 400 - not valid JSON, e.g. a broken Message box in TradingView
+- **7. TradingView retry of alert 1:** HTTP 200 duplicate ignored - TradingView resends an alert if the reply is slow; the same alert id is processed only once, so you never buy twice
 
 Open: <http://localhost:8000/#/integrations>
 
-*Check:* 7/7: valid buy and sell (200), wrong secret (401), symbol not allowed and qty too large (422), malformed (400), retry ignored (200 duplicate).
+*Check:* 7/7 simulated alerts handled as expected: valid buy and sell (200), wrong secret (401), symbol not allowed and qty too large (422), malformed (400), retry ignored (200 duplicate). The Recent alerts table (the audit log, secret redacted) lists every one.
 
 **Step 3. Real alerts (paid TradingView plan)**
 
-Optional - trainer demonstration: with a paid TradingView plan, an alert on the exported Pine strategy can post to the simulator's webhook URL once the trainer has made the simulator reachable from the internet (a public tunnel URL). Watch the trainer's alert pass validation, signal confirmation and risk into a paper order.
+Optional - trainer demonstration, or try it yourself if you have a paid TradingView plan. This is the same flow with a real TradingView alert. TradingView's servers are on the internet: they cannot reach localhost on your laptop and only post to public HTTPS addresses (port 80/443). So the simulator first gets a public address from a tunnel (ngrok), then the alert is created on a TradingView chart with that address and the message from Step 1.
+
+- **You need:** a paid TradingView plan (webhooks are not on the free plan) with two-factor authentication switched on (Profile > Settings > Privacy and Security); a free ngrok account and ngrok installed (ngrok.com); the simulator running
+- **1. Start the tunnel:** in a terminal run: ngrok http 8000. Copy the Forwarding address, e.g. https://ab12-34-56-78-90.ngrok-free.app. Keep the window open - closing it ends the tunnel. On the free ngrok plan the address changes every time ngrok restarts, so paste the new one into the alert.
+- **2. Your webhook URL:** the Forwarding address + /api/webhooks/tradingview, e.g. https://ab12-34-56-78-90.ngrok-free.app/api/webhooks/tradingview. Test: open the Forwarding address in a browser - after ngrok's 'Visit Site' notice the simulator loads (TradingView does not see the notice).
+- **3. Open a chart:** tradingview.com > Products > Supercharts (not the home page). Pick a symbol on the allow-list, e.g. SPY or KO.
+- **4. Add the strategy:** Pine Editor (bottom of the chart) > paste the Pine Script v6 exported from the simulator's Strategy Library (as in Lab 5) > Save > Add to chart. Its buy and sell markers appear on the chart.
+- **5. Open the alert dialog:** the Alert button (alarm clock with +) in the top toolbar, or Option+A (Alt+A on Windows). Not the bell icon in the right sidebar - that is Community notifications.
+- **6. Condition:** change Price to your strategy's name; keep 'Order fills only'
+- **7. Message:** click the Message row (it reads e.g. 'SPY Crossing 770.00 >'), delete the text and paste the Alert message from Step 1 with the secret revealed - a masked secret is rejected with HTTP 401
+- **8. Notifications:** click the 'App, Toasts >' text on the Notifications row, tick Webhook URL, paste your webhook URL and go back - the row now includes Webhook. If Webhook URL is locked, the plan does not include webhooks.
+- **9. Create:** press Create: the alert fires the next time the strategy places an order
+- **Quick demo with a Price alert:** the {{strategy...}} placeholders are filled only for a strategy alert. For a 'Price Crossing' alert (fires within minutes if the value is next to the current price) write the action and quantity into the message: {"secret": "<revealed secret>", "id": "{{timenow}}", "ticker": "{{ticker}}", "action": "buy", "qty": 1, "price": "{{close}}"}
+- **Watch it arrive:** the ngrok window's Connections count goes up, and http://127.0.0.1:4040 shows the request and the simulator's reply (200 / 401 / 422); then Integrations > Recent alerts and Paper Trading > Orders (source webhook)
 
 Open: <http://localhost:8000/#/integrations>
 

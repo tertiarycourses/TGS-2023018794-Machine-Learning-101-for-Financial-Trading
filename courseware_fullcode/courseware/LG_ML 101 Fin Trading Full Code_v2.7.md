@@ -1,6 +1,6 @@
 # Learner Guide - Machine Learning 101 for Financial Trading
 
-FSE-DAT-3019-1.1 Data Analytics and Computational Modelling (Proficiency Level 3) | Version 2.4 (22 October 2026) | Tertiary Infotech Academy Pte Ltd
+FSE-DAT-3019-1.1 Data Analytics and Computational Modelling (Proficiency Level 3) | Version 2.7 (23 October 2026) | Tertiary Infotech Academy Pte Ltd
 
 > Lion City Capital and every scenario in these materials are fictitious and for training only. All trading in this course is paper (simulated) trading. Nothing in these materials is investment advice or a recommendation to trade any security.
 
@@ -1533,6 +1533,39 @@ In labs_fullcode/pipeline/evaluate.py add an 'Ulcer index' column = sqrt(mean(dr
 - Advanced computational methods: grid and random search over strategy parameters, Monte Carlo simulation and bootstrapping, walk-forward optimisation, and gradient-boosted ensembles.
 - Strategy search is itself an algorithm: testing many parameter combinations on in-sample data and then confirming only the best few out of sample - always counting how many combinations were tried.
 
+#### Supervised Learning: Learning from Labelled Examples
+
+- **Definition:** The model learns a mapping from inputs (features) to a known answer (the label), using history in which the answer is already known.
+- **In trading:** Features known at today's close - 5-day return, RSI, volatility. Label: did the price rise the NEXT day (classification) or by how much (regression)?
+- **What it gives you:** A prediction for a new day - P(up) = 0.55 or an expected return. A rule such as 'long if P(up) > 0.55' turns it into a position.
+- **Watch out for:** Features must use only data known at decision time. Accuracy near 50% is normal for daily direction - judge the strategy net of costs.
+
+#### Unsupervised Learning: Finding Structure Without Labels
+
+- **Definition:** There is no answer key. The algorithm groups or compresses the data by similarity, and you decide what the groups mean.
+- **In trading:** Cluster days by return and volatility into regimes; PCA reduces many correlated assets to a few factors; cluster stocks for diversification.
+- **What it gives you:** A group per day or asset (calm / normal / stressed) or a few factors - inputs to a decision, such as cutting position size when stressed, not trades by themselves.
+- **Watch out for:** Clusters have no built-in meaning and k is your choice. Fit on past data only and re-check as the market changes.
+
+#### Reinforcement Learning: Learning by Action and Reward
+
+- **Definition:** An agent observes a state, takes an action and receives a reward; by trial and error it learns a policy that maximises total reward over time.
+- **In trading:** State: prices, position, time left. Action: buy, hold, sell or how many shares. Reward: P&L net of costs, minus a penalty for risk.
+- **What it gives you:** A policy - the best action for each state. Used for optimal execution of large orders, market making and dynamic hedging, mostly at banks and research labs.
+- **Watch out for:** Needs a realistic simulator and huge amounts of experience; it learns to exploit any flaw in the simulator. Unstable and hard to explain - rarely the first tool.
+
+#### Supervised vs Unsupervised vs Reinforcement Learning
+
+| Aspect | Supervised | Unsupervised | Reinforcement |
+|---|---|---|---|
+| Learns from | Labelled history: features + the known answer | Unlabelled data: features only | Its own experience: states, actions, rewards |
+| Question it answers | What will happen? - predict a target | What patterns exist? - group or compress | What should I do? - choose the next action |
+| Feedback | Error against the correct answer | None - judged by how useful the groups are | A reward, often delayed (profit, cost) |
+| Typical algorithms | Logistic regression, random forest, XGBoost, LSTM | K-means, hierarchical clustering, PCA | Q-learning, policy gradients (PPO) |
+| Trading example | P(SPY up tomorrow) from RSI and recent returns | Calm / normal / stressed market regimes | An agent slicing a 100,000-share order to cut cost |
+| Main risk | Overfitting noise; look-ahead leakage | Meaningless or unstable clusters | Exploiting simulator flaws; unstable training |
+
+
 ### 3.2 Supervised Learning Models for Trading Signals
 
 - Target and features: the target is what you predict (next-day direction); the features are what you know at prediction time (lagged returns, RSI, MACD, volatility, volume change). Any feature using future data is leakage.
@@ -2543,6 +2576,10 @@ Run: python -m pipeline schedule and read the three entries. Only install one if
 *A7, K5, K7 | 20 min | stage: Event-driven automation | folder: [`labs_fullcode/Lab17-tradingview-webhook/`](../labs_fullcode/Lab17-tradingview-webhook/)*
 
 Build pipeline/webhook.py: a webhook receiver that turns TradingView alert JSON into a pipeline decision (validation -> signal -> risk -> execution), test it with a local alert simulator and a self-test, and configure a real TradingView strategy alert.
+
+#### What This Lab Is For
+
+In Labs 1-16 you start every run yourself. Many real trading bots are started by an event instead - here a TradingView alert. When your strategy fires on a TradingView chart, TradingView sends a short message (JSON) to a web address called a webhook, and the simulator turns that message into a paper order automatically. You do not get a webhook from TradingView: the simulator gives you the address and you paste it into the TradingView alert. Because anyone who finds that address could send it a message, the simulator acts as a gateway and checks every alert before it trades: Is it from us (the secret)? Is it allowed (the symbol allow-list and maximum size)? Is it readable (valid JSON)? Have we seen it already (duplicate)? Optionally, does the app's own signal agree? Only then do the risk checks run and the paper order go in, and every request is written to the audit log. The lesson: automation is only safe when every incoming signal is checked before any order is placed.
 
 #### How to Run the Python Scripts
 
